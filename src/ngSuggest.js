@@ -12,15 +12,35 @@ angular.module('ngSuggest',['ui.bootstrap'])
  * 
  * ...
  */
-.directive('ng-suggest',function(){
+.directive('ngSuggest',function($http){
     return {
         restrict: 'A',
         scope: {
-            api: '=ng-suggest',
+            api: '@ngSuggest',
+            suggest: '=suggestFunction', // TODO: default value
         },
         link: function(scope,element,attrs) {
+            scope.suggest = function(value) {
+                // TODO: use URL pattern instead of concat
+                var url = scope.api + decodeURIComponent(value); 
+                console.log(url);
+                // TODO: $http.get(url) by default (CORS) instead of JSONP
+                return $http.jsonp(url).then(function(response) {
+                    var x = [];
+                    var data = response.data;
+                    // console.log(data);
+                    for(var i=0; i<data[1].length; i++) {
+                        x.push( data[1][i] );
+                    }
+                    // console.log(x);
+                    return x;
+                });
+            };
             // TODO: see http://angular-ui.github.io/bootstrap/#/typeahead
             // ...
+            console.log(scope.api);
+
+            scope.$watch('api'); // watch if attribute changes (TODO: Test)
         }
     };
 });
