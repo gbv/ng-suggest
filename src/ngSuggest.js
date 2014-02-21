@@ -22,7 +22,7 @@ angular.module('ngSuggest',['ui.bootstrap'])
         link: function(scope,element,attrs) {
             scope.suggest = function(value) {
                 // TODO: use URL pattern instead of concat
-                var url = scope.api + decodeURIComponent(value); 
+                var url = scope.api + decodeURIComponent(value) + '&callback=JSON_CALLBACK';
                 console.log(url);
                 // TODO: $http.get(url) by default (CORS) instead of JSONP
                 return $http.jsonp(url).then(function(response) {
@@ -30,7 +30,11 @@ angular.module('ngSuggest',['ui.bootstrap'])
                     var data = response.data;
                     // console.log(data);
                     for(var i=0; i<data[1].length; i++) {
-                        x.push( data[1][i] );
+                        x.push( { 
+                            label: data[1][i], 
+                            description: data[2][i],
+                            url: data[3][i]
+                        } );
                     }
                     // console.log(x);
                     return x;

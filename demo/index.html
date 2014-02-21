@@ -17,14 +17,15 @@
     <div class="row">
       <div class="col-md-12">
         <h2>Typeahead via OpenSearch Suggest</h2>
+        <h3>geonames</h3>
       </div>
       <div class="col-md-6">
         <pre>Input: {{input | json}}</pre>
-        <pre>suggest: {{input | json}}</pre>
+        <pre>suggest: {{suggest1 | json}}</pre>
         <input ng-model="input" 
-               ng-suggest="http://ws.gbv.de/suggest/geonames/?country=DE&count=20&callback=JSON_CALLBACK&searchterm="
-               suggest-function="suggest"
-               typeahead="x for x in suggest($viewValue) | filter:$viewValue"
+               ng-suggest="http://ws.gbv.de/suggest/geonames/?country=DE&count=20&searchterm="
+               suggest-function="suggest1"
+               typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
                typeahead-loading="loadingLocations"
                class="form-control" />
         <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
@@ -32,6 +33,37 @@
       <div class="col-md-6">
           ng-suggest is based on 
           <a href="http://angular-ui.github.io/bootstrap/#/typeahead">ui.bootstrap.typeahead</a>.
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <h3>gn250</h2>
+      </div>
+      <script type="text/ng-template" id="sampleTemplate2.html">
+        <a>
+          <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+          <br>
+          {{match.model.description}}
+          <br>
+          {{match.model.url}}
+        </a>
+      </script>
+
+      <div class="col-md-6">
+        <pre>Input: {{input2 | json}}</pre>
+        <pre>API: {{api2}}</pre>
+        <input ng-model="input2" 
+               ng-suggest="{{api2}}"
+               suggest-function="suggest2"
+               typeahead="item.label for item in suggest2($viewValue) | filter:$viewValue"
+               typeahead-template-url="sampleTemplate2.html" 
+               typeahead-loading="loadingLocations2"
+               class="form-control" />
+        <i ng-show="loadingLocations2" class="glyphicon glyphicon-refresh"></i>
+      </div>
+      <div class="col-md-6">
+        Custom templates
       </div>
     </div>
   </div>
