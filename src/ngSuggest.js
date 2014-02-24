@@ -18,26 +18,33 @@ angular.module('ngSuggest',['ui.bootstrap'])
         scope: {
             api: '@ngSuggest',
             suggest: '=suggestFunction', // TODO: default value
+            jsonp: '@jsonp', // TODO
         },
         link: function(scope,element,attrs) {
             scope.suggest = function(value) {
-                // TODO: use URL pattern instead of concat
                 var url = scope.api + decodeURIComponent(value) + '&callback=JSON_CALLBACK';
                 console.log(url);
+
                 // TODO: $http.get(url) by default (CORS) instead of JSONP
                 return $http.jsonp(url).then(function(response) {
-                    var x = [];
-                    var data = response.data;
-                    // console.log(data);
-                    for(var i=0; i<data[1].length; i++) {
-                        x.push( { 
-                            label: data[1][i], 
-                            description: data[2][i],
-                            url: data[3][i]
-                        } );
+                    var items = [];
+                    var suggest = response.data;
+                    if (angular.isArray(suggest) && angular.isArray(suggest[1])) {
+                        if (!angular.isArray(suggest[2])) {
+                            suggest[2] = [ ];
+                        }
+                        if (!angular.isArray(suggest[3])) {
+                            suggest[2] = [ ];
+                        }
+                        for(var i=0; i<suggest.length; i++) {
+                            items.push( { 
+                                label: suggest[1][i], 
+                                description: suggest[2][i],
+                                url: suggest[3][i]
+                            } );
+                        }
                     }
-                    // console.log(x);
-                    return x;
+                    return items;
                 });
             };
             // TODO: see http://angular-ui.github.io/bootstrap/#/typeahead
