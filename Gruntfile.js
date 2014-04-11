@@ -85,9 +85,15 @@ module.exports = function(grunt) {
                 dest: 'ng-suggest.js',
             },
         },
+        shell: {
+            site: {
+                command: "rm -rf site && mkdir site && cp -r docs/* site"
+            }
+        }
     });
 
     grunt.registerTask('default',['docs']);
+    grunt.registerTask('site', ['docs','shell:site']);
     grunt.registerTask('ng-suggest',['version','ngtemplates','concat']);
     grunt.registerTask('docs',['clean','ng-suggest','ngdocs']);
     grunt.registerTask('test',['karma:unit']);

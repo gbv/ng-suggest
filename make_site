@@ -1,9 +1,0 @@
-#!/bin/bash -e
-
-rm -rf site
-mkdir site
-rm -rf docs
-grunt docs
-cp -r docs/* site
-
-# TODO: favicon.ico etc.
