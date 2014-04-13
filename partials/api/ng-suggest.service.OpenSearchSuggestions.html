@@ -14,8 +14,8 @@ suggestService.suggest(search).then( function(suggestions) {
      ...
 });
 </pre>
-<p>The method <code>suggestions</code> returns a promise to get a suggestions object
-having the following form:</p>
+<p>The method <code>suggest</code> returns a promise to get a suggestions object having
+the following form:</p>
 <pre class="prettyprint" class="prettyprint linenums">
 {
    query: "query string",
@@ -29,6 +29,12 @@ having the following form:</p>
    ]
 } 
 </pre>
+<p>Note that suggestions originally returned from an OpenSearch server have the
+form <code>[&quot;query string&quot;],[&quot;completion&quot;,...],[&quot;description&quot;,...],[&quot;url&quot;,...]]</code>,
+so it is transformed to the form exemplified above. A custom transformation
+function can be given as optional second argument to the constructor.</p>
+<p>See <a href="#/api/ng-suggest.service:SeeAlso">SeeAlso</a> for a simplified subclass of 
+this service.</p>
 </div></div>
 <h2 id="example">Example</h2>
 <div class="example"><div class="ng-suggest-service-page ng-suggest-service-opensearchsuggestions-page"><h4 id="example_source">Source</h4>
