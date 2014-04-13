@@ -1,13 +1,15 @@
 'use strict';
 
 module.exports = function(grunt) {
-    grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-ngdocs');
-    grunt.loadNpmTasks('grunt-version');
+    grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-ngdocs');
+    grunt.loadNpmTasks('grunt-ngmin');
     grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-version');
 
     grunt.initConfig({
         pkg: require('./package.json'),
@@ -31,7 +33,8 @@ module.exports = function(grunt) {
                 navTemplate: 'src/docs-nav.html',
                 scripts: [ 
                     'angular.js',
-                    'ng-suggest.js' 
+                    'ng-suggest.min.js',
+//                    'ng-suggest.js' 
                 ]
             },
             api: {
@@ -85,6 +88,23 @@ module.exports = function(grunt) {
                 dest: 'ng-suggest.js',
             },
         },
+        ngmin: {
+            angular: {
+                src: ['ng-suggest.js'],
+                dest: 'ng-suggest.js',
+            }
+        },
+        uglify : {
+            options: {
+                report: 'min',
+                mangle: false
+            },
+            my_target : {
+                files : {
+                    'ng-suggest.min.js' : ['ng-suggest.js']
+                }
+            }
+        },
         shell: {
             site: {
                 command: "rm -rf site && mkdir site && cp -r docs/* site"
@@ -116,7 +136,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default',['docs']);
-    grunt.registerTask('ng-suggest',['version','ngtemplates','concat']);
+    grunt.registerTask('ng-suggest',['version','ngtemplates','concat','ngmin','uglify']);
     grunt.registerTask('docs',['clean','ng-suggest','ngdocs']);
     grunt.registerTask('gh-pages', ['shell:working_copy_must_be_clean','site','shell:gh_pages']);
     grunt.registerTask('push-site', ['gh-pages','shell:push_site']);
