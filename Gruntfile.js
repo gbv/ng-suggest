@@ -88,14 +88,39 @@ module.exports = function(grunt) {
         shell: {
             site: {
                 command: "rm -rf site && mkdir site && cp -r docs/* site"
+            },
+            working_copy_must_be_clean: {
+                command: "if git status --porcelain 2>/dev/null | grep -q .; then exit 1; fi",
+                options: { failOnError: true } 
+            },
+            push_site: {
+                command: "git push origin gh-pages",
+                options: { failOnError: true } 
+            },
+            gh_pages: {
+                command: [
+                    'git checkout gh-pages',
+                    'cp -rf site/* .',
+                    'rm -rf site',
+                    'git add .',
+                    'git commit -m "updated site"',
+                    'git checkout master'
+                ].join('&&'),
+                options: { 
+                    stdout: true,
+                    stderr: true,
+                    failOnError: true
+                } 
             }
         }
     });
 
     grunt.registerTask('default',['docs']);
-    grunt.registerTask('site', ['docs','shell:site']);
     grunt.registerTask('ng-suggest',['version','ngtemplates','concat']);
     grunt.registerTask('docs',['clean','ng-suggest','ngdocs']);
+    grunt.registerTask('gh-pages', ['shell:working_copy_must_be_clean','site','shell:gh_pages']);
+    grunt.registerTask('push-site', ['gh-pages','shell:push_site']);
+    grunt.registerTask('site', ['docs','shell:site']);
     grunt.registerTask('test',['karma:unit']);
     grunt.registerTask('watch',['karma:watch']);
 };
