@@ -46,47 +46,68 @@
     <div ng-controller="myController">
       <div>
         <input ng-model="search" class="search-query"/> 
-        <select class="form-control" 
-                ng-model="wikipedia" ng-options="w.name for w in wikipedias">
+        <select ng-model="site" ng-options="s.name for s in sites">
+        </select>
+        <select ng-model="language" ng-options="l.name for l in languages">
         </select>
       </div>
+      <ul>
+        <li ng-repeat="s in suggestions.values">
+          <a ng-if="s.url" href="{{s.url}}">{{s.label}}</a>
+          <span ng-if="!s.url">{{s.label}}</span>
+          <div ng-if="s.description">{{s.description}}</div>
+        </li>
+      </ul>
       <div><pre>{{suggestions | json}}</pre></div>
     </div>
   </file>
   <file name="script.js">
     angular.module('myApp',['ngSuggest']);
-
     function myController($scope, OpenSearchSuggestions) {
 
         function updateSearch(search) {
-            // using a promise
             $scope.suggestService.suggest(search).then(function(data) {
                 $scope.suggestions = data;
-            });
-        }
-        
-        $scope.$watch('search', updateSearch );
-
-        function updateWikipedia(wikipedia) {
-            var url = "http://" + wikipedia.lang
-                    + ".wikipedia.org/w/api.php?action=opensearch&search={searchTerms}&namespace=0";
-            $scope.suggestService = new OpenSearchSuggestions(url);
+            }); // TODO: else $scope.suggestions = null;
         }
 
-        $scope.$watch('wikipedia', function(w_new, w_old) {
-            if (w_new != w_old) {
-                updateWikipedia(w_new);
-                updateSearch($scope.search);
+        function updateSite() {
+            var url = $scope.site.url.replace('{language}', $scope.language.code);
+            $scope.suggestService = new OpenSearchSuggestions(url, $scope.site.transform);
+            updateSearch($scope.search);
+        };
+
+        $scope.sites = [{ 
+            name: "Wikipedia",
+            url:  "//{language}.wikipedia.org/w/api.php?action=opensearch&search={searchTerms}&namespace=0",
+        },{ 
+            name: "Wikidata", 
+            url: "//www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language={language}&type=item&continue=0&search={searchTerms}",
+            transform: function(data) {
+                var suggestions = { 
+                    query: data.searchinfo.search, 
+                    values: [ ]
+                };
+
+                for(var i=0; i<data.search.length; i++) {
+                    suggestions.values.push( data.search[i] );
+                }
+
+                return suggestions;                
             }
-        });
+        }];
+        $scope.site = $scope.sites[0];
 
-        $scope.wikipedias = [
-            { lang: "en", name:"English Wikipedia" },
-            { lang: "de", name:"Deutschsprachige Wikipedia" },
+        $scope.languages = [
+            { code: "en", name: "English" },
+            { code: "de", name: "Deutsch" },
         ];
-        $scope.search = "Wiki";
+        $scope.language = $scope.languages[0];
 
-        updateWikipedia( $scope.wikipedia = $scope.wikipedias[0] );
+        $scope.search = "Wiki";
+        $scope.$watch('site', updateSite);
+        $scope.$watch('language', updateSite);
+        $scope.$watch('search', updateSearch);
     }
   </file>
 </example>
@@ -95,22 +116,18 @@ angular.module('ngSuggest')
 .factory('OpenSearchSuggestions',['$http','$q',function($http, $q) {
 
     // transform suggestions to object
-    var transformSuggestions = function(response) {
+    var transformSuggestions = function(data) {
         var suggestions = { 
-            query: response.data[0], 
+            query: data[0], 
             values: [ ] 
         };
-        if (!angular.isArray(response.data[2])) {
-            response.data[2] = [ ];
-        }
-        if (!angular.isArray(response.data[3])) {
-            response.data[3] = [ ];
-        }
-        for(var i=0; i<response.data[1].length; i++) {
+        if (!angular.isArray(data[2])) data[2] = [ ];
+        if (!angular.isArray(data[3])) data[3] = [ ];
+        for(var i=0; i<data[1].length; i++) {
             suggestions.values.push( { 
-                label:       response.data[1][i], 
-                description: response.data[2][i],
-                url:         response.data[3][i]
+                label:       data[1][i], 
+                description: data[2][i],
+                url:         data[3][i]
             } );
         }
         return suggestions;                
@@ -135,14 +152,10 @@ angular.module('ngSuggest')
             var transform = this.transform;
 
             return $http.jsonp(url).then(function(response) {
-
-                // invalid response?
-                if (!angular.isArray(response.data) || !angular.isArray(response.data[1])) {
-                    return $q.reject(response.data);
-                }
-               
+              
                 // TODO: catch failure of transformation
-                var suggestions = transform(response);
+                var suggestions = transform(response.data);
+                    // return $q.reject(response.data);
 
                 return suggestions;                
             }, function(response) {
