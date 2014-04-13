@@ -15,8 +15,8 @@
  * });
  * </pre>
  *
- * The method `suggestions` returns a promise to get a suggestions object
- * having the following form:
+ * The method `suggest` returns a promise to get a suggestions object having
+ * the following form:
  *
  * <pre class="prettyprint">
  * {
@@ -31,6 +31,14 @@
  *    ]
  * } 
  * </pre>
+ *
+ * Note that suggestions originally returned from an OpenSearch server have the
+ * form `["query string"],["completion",...],["description",...],["url",...]]`,
+ * so it is transformed to the form exemplified above. A custom transformation
+ * function can be given as optional second argument to the constructor.
+ *
+ * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
+ * this service.
  *
  * @example
  <example module="myApp">
@@ -85,13 +93,38 @@
  */
 angular.module('ngSuggest')
 .factory('OpenSearchSuggestions',['$http','$q',function($http, $q) {
+
+    // transform suggestions to object
+    var transformSuggestions = function(response) {
+        var suggestions = { 
+            query: response.data[0], 
+            values: [ ] 
+        };
+        if (!angular.isArray(response.data[2])) {
+            response.data[2] = [ ];
+        }
+        if (!angular.isArray(response.data[3])) {
+            response.data[3] = [ ];
+        }
+        for(var i=0; i<response.data[1].length; i++) {
+            suggestions.values.push( { 
+                label:       response.data[1][i], 
+                description: response.data[2][i],
+                url:         response.data[3][i]
+            } );
+        }
+        return suggestions;                
+    };
+
     // constructor
-    var OpenSearchSuggestions = function( url ) {
+    var OpenSearchSuggestions = function(url, transform) {
         if (url && url.indexOf('{searchTerms}') == -1) {
             url = url + '{searchTerms}';
         }
         this.url = url;
+        this.transform = transform ? transform : transformSuggestions;
     };
+
     // methods
     OpenSearchSuggestions.prototype = {
         suggest: function(searchTerms) {
@@ -99,6 +132,7 @@ angular.module('ngSuggest')
 
             var url = this.url.replace('{searchTerms}', decodeURIComponent(searchTerms))
                     + '&callback=JSON_CALLBACK';
+            var transform = this.transform;
 
             return $http.jsonp(url).then(function(response) {
 
@@ -107,24 +141,8 @@ angular.module('ngSuggest')
                     return $q.reject(response.data);
                 }
                
-                // transform suggestions to object
-                var suggestions = { 
-                    query: response.data[0], 
-                    values: [ ] 
-                };
-                if (!angular.isArray(response.data[2])) {
-                    response.data[2] = [ ];
-                }
-                if (!angular.isArray(response.data[3])) {
-                    response.data[3] = [ ];
-                }
-                for(var i=0; i<response.data[1].length; i++) {
-                    suggestions.values.push( { 
-                        label:       response.data[1][i], 
-                        description: response.data[2][i],
-                        url:         response.data[3][i]
-                    } );
-                }
+                // TODO: catch failure of transformation
+                var suggestions = transform(response);
 
                 return suggestions;                
             }, function(response) {
