@@ -37,7 +37,7 @@ NG_DOCS={
       "type": "service",
       "moduleName": "ng-suggest",
       "shortDescription": "The OpenSearchSuggestions service can be used to query an OpenSearch ",
-      "keywords": "$scope $watch angular api argument character class completion custom data de description deutschsprachige en english exemplified form form-control function html http includes instanciated js json label lang linenums method module myapp mycontroller ng-controller ng-model ng-options ng-suggest ngsuggest note object opensearch opensearchsuggestions optional org originally php prettyprint promise query returned returns script search search-query second seealso sequence server service simplified string subclass suggestions suggestservice template transformation transformed updatesearch updatewikipedia url values var w_old wiki wikipedia wikipedias"
+      "keywords": "$scope $watch angular api argument character class code completion custom data de description deutsch en english exemplified form function href html http includes instanciated js json label language languages length linenums method module myapp mycontroller ng-controller ng-if ng-model ng-options ng-repeat ng-suggest ngsuggest note null object opensearch opensearchsuggestions optional org originally php prettyprint promise push query replace return returned returns script search search-query searchinfo second seealso sequence server service simplified site sites string subclass suggestions suggestservice template todo transform transformation transformed updatesearch updatesite url values var wiki wikidata wikipedia"
     },
     {
       "section": "api",
@@ -56,6 +56,6 @@ NG_DOCS={
   "startPage": "/api/ng-suggest",
   "scripts": [
     "angular.min.js",
-    "ng-suggest.js"
+    "ng-suggest.min.js"
   ]
 };

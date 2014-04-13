@@ -45,10 +45,18 @@ this service.</p>
   <div ng-controller="myController">
     <div>
       <input ng-model="search" class="search-query"/> 
-      <select class="form-control" 
-              ng-model="wikipedia" ng-options="w.name for w in wikipedias">
+      <select ng-model="site" ng-options="s.name for s in sites">
+      </select>
+      <select ng-model="language" ng-options="l.name for l in languages">
       </select>
     </div>
+    <ul>
+      <li ng-repeat="s in suggestions.values">
+        <a ng-if="s.url" href="{{s.url}}">{{s.label}}</a>
+        <span ng-if="!s.url">{{s.label}}</span>
+        <div ng-if="s.description">{{s.description}}</div>
+      </li>
+    </ul>
     <div><pre>{{suggestions | json}}</pre></div>
   </div>
 </script>
@@ -57,38 +65,51 @@ this service.</p>
 <pre class="prettyprint linenums" ng-set-text="script.js"></pre>
 <script type="text/ng-template" id="script.js">
   angular.module('myApp',['ngSuggest']);
-
   function myController($scope, OpenSearchSuggestions) {
 
       function updateSearch(search) {
-          // using a promise
           $scope.suggestService.suggest(search).then(function(data) {
               $scope.suggestions = data;
-          });
-      }
-      
-      $scope.$watch('search', updateSearch );
-
-      function updateWikipedia(wikipedia) {
-          var url = "http://" + wikipedia.lang
-                  + ".wikipedia.org/w/api.php?action=opensearch&search={searchTerms}&namespace=0";
-          $scope.suggestService = new OpenSearchSuggestions(url);
+          }); // TODO: else $scope.suggestions = null;
       }
 
-      $scope.$watch('wikipedia', function(w_new, w_old) {
-          if (w_new != w_old) {
-              updateWikipedia(w_new);
-              updateSearch($scope.search);
+      function updateSite() {
+          var url = $scope.site.url.replace('{language}', $scope.language.code);
+          $scope.suggestService = new OpenSearchSuggestions(url, $scope.site.transform);
+          updateSearch($scope.search);
+      };
+
+      $scope.sites = [{ 
+          name: "Wikipedia",
+          url:  "//{language}.wikipedia.org/w/api.php?action=opensearch&search={searchTerms}&namespace=0",
+      },{ 
+          name: "Wikidata", 
+          url: "//www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language={language}&type=item&continue=0&search={searchTerms}",
+          transform: function(data) {
+              var suggestions = { 
+                  query: data.searchinfo.search, 
+                  values: [ ]
+              };
+
+              for(var i=0; i<data.search.length; i++) {
+                  suggestions.values.push( data.search[i] );
+              }
+
+              return suggestions;                
           }
-      });
+      }];
+      $scope.site = $scope.sites[0];
 
-      $scope.wikipedias = [
-          { lang: "en", name:"English Wikipedia" },
-          { lang: "de", name:"Deutschsprachige Wikipedia" },
+      $scope.languages = [
+          { code: "en", name: "English" },
+          { code: "de", name: "Deutsch" },
       ];
-      $scope.search = "Wiki";
+      $scope.language = $scope.languages[0];
 
-      updateWikipedia( $scope.wikipedia = $scope.wikipedias[0] );
+      $scope.search = "Wiki";
+      $scope.$watch('site', updateSite);
+      $scope.$watch('language', updateSite);
+      $scope.$watch('search', updateSearch);
   }
 </script>
 </div>
