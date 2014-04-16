@@ -1,6 +1,6 @@
 NG_DOCS={
   "sections": {
-    "api": "Documentation"
+    "api": "documentation"
   },
   "pages": [
     {
