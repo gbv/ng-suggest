@@ -32,7 +32,8 @@ the following form:</p>
 <p>Note that suggestions originally returned from an OpenSearch server have the
 form <code>[&quot;query string&quot;],[&quot;completion&quot;,...],[&quot;description&quot;,...],[&quot;url&quot;,...]]</code>,
 so it is transformed to the form exemplified above. A custom transformation
-function can be given as optional second argument to the constructor.</p>
+function can be given as optional named parameter <code>transform</code>. The optional
+paramater <code>jsonp</code> (true by default) defines whether requests are done via JSONP.</p>
 <p>See <a href="#/api/ng-suggest.service:SeeAlso">SeeAlso</a> for a simplified subclass of 
 this service.</p>
 </div></div>
@@ -75,7 +76,10 @@ this service.</p>
 
       function updateSite() {
           var url = $scope.site.url.replace('{language}', $scope.language.code);
-          $scope.suggestService = new OpenSearchSuggestions(url, $scope.site.transform);
+          $scope.suggestService = new OpenSearchSuggestions({
+              url: url, 
+              transform: $scope.site.transform,
+          });
           updateSearch($scope.search);
       };
 

@@ -1,0 +1,44 @@
+<h1><code ng:non-bindable=""></code>
+<div><span class="hint"></span>
+</div>
+</h1>
+<div><div class="index-page"><h2 id="ng-suggest">ng-suggest</h2>
+<blockquote>
+<p>AngularJS module to provide Typeahead via OpenSearch Suggestions</p>
+</blockquote>
+<p><strong>ng-suggest</strong> is a module for <a href="http://angularjs.org/">AngularJS</a> to facilitate 
+the use of <a href="http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.0">OpenSearch Suggestions</a> and <a href="http://www.gbv.de/wikis/cls/SeeAlso">SeeAlso links</a> in your web application.
+See <a href="#/api/ng-suggest">ng-suggest</a> for a detailed API documentation.</p>
+<p>The latest release of ng-suggest is version 0.0.1-pre. Source code and issue tracker
+can be found at <a href="https://github.com/gbv/ng-suggest">https://github.com/gbv/ng-suggest</a>.</p>
+<h3 id="ng-suggest_author-and-contributors">Author and Contributors</h3>
+<ul>
+<li>Jakob Voß <a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#x76;&#111;&#115;&#x73;&#64;&#103;&#x62;&#118;&#46;&#x64;&#101;">&#x76;&#111;&#115;&#x73;&#64;&#103;&#x62;&#118;&#46;&#x64;&#101;</a></li>
+<li>Moritz Horn <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#109;&#x6f;&#x72;&#105;&#x74;&#x7a;&#x2e;&#x68;&#x6f;&#114;&#x6e;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#46;&#99;&#111;&#109;">&#109;&#x6f;&#x72;&#105;&#x74;&#x7a;&#x2e;&#x68;&#x6f;&#114;&#x6e;&#64;&#x67;&#109;&#97;&#105;&#x6c;&#46;&#99;&#111;&#109;</a></li>
+</ul>
+<h3 id="ng-suggest_license">License</h3>
+<p>Code licensed under the <a href="http://www.gnu.org/licenses/agpl-3.0.html">AGPL</a>.
+Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></p>
+</div><h2 id="example">Example</h2>
+<div class="example"><div class="index-page"><h4 id="example_source">Source</h4>
+<div source-edit="myApp" source-edit-deps="angular.js script.js" source-edit-html="index.html-2" source-edit-css="" source-edit-js="script.js-3" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
+<div class="tabbable"><div class="tab-pane" title="index.html">
+<pre class="prettyprint linenums" ng-set-text="index.html-2" ng-html-wrap-loaded="myApp angular.js script.js"></pre>
+<script type="text/ng-template" id="index.html-2">
+  <div ng-controller="myController">
+    <div>
+      <input suggest-typeahead="//wikipedia.org/w/api.php?action=opensearch&namespace=0&search=" />
+    </div>
+  </div>
+</script>
+</div>
+<div class="tab-pane" title="script.js">
+<pre class="prettyprint linenums" ng-set-text="script.js-3"></pre>
+<script type="text/ng-template" id="script.js-3">
+  angular.module('myApp',['ngSuggest']);
+</script>
+</div>
+</div><h4 id="example_demo">Demo</h4>
+<div class="well doc-example-live animate-container" ng-embed-app="myApp" ng-set-html="index.html-2" ng-eval-javascript="script.js-3"></div>
+</div></div>
+</div>

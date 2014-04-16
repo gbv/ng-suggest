@@ -5,12 +5,21 @@ NG_DOCS={
   "pages": [
     {
       "section": "api",
+      "id": "index",
+      "shortName": "index",
+      "type": "overview",
+      "moduleName": "index",
+      "shortDescription": "ng-suggest",
+      "keywords": "angular angularjs api application author code contributors de detailed documentation facilitate gbv gnu horn html issue jakob js latest license licensed links module moritz myapp mycontroller ng-controller ng-suggest ngsuggest opensearch org overview php provide release script source suggest-typeahead suggestions tracker typeahead version vo web"
+    },
+    {
+      "section": "api",
       "id": "ng-suggest",
       "shortName": "ng-suggest",
       "type": "overview",
       "moduleName": "ng-suggest",
-      "shortDescription": "The AngularJS module ngSuggest provides access to OpenSearch Suggestions and SeeAlso web services for search suggestion, ",
-      "keywords": "access agpl angularjs api context directive http inclusion licensed links module ng-suggest opensearch opensearch-suggest opensearchsuggestions org overview search seealso seealso-server service services suggestion suggestions typeahead unter web"
+      "shortDescription": "The AngularJS module ngSuggest provides access to OpenSearch Suggestions and SeeAlso",
+      "keywords": "access angularjs api context de directive gbv http inclusion link links module ng-suggest opensearch opensearch-suggest opensearchsuggestions org overview query search seealso seealso-server server service services suggest-typeahead suggestion suggestions typeahead web"
     },
     {
       "section": "api",
@@ -18,8 +27,8 @@ NG_DOCS={
       "shortName": "opensearch-suggest",
       "type": "directive",
       "moduleName": "ng-suggest",
-      "shortDescription": "This directive can be used to provide a typeahead input field ...",
-      "keywords": "api bootstrap change current directive field filter implementation input item label ng-suggest provide scope search suggest1 suggestions typeahead ui variables"
+      "shortDescription": "This directive can be used to provide a typeahead input field.",
+      "keywords": "api application bootstrap demo directive example facilitate field github input io ng-suggest provide replaced requires typeahead usage"
     },
     {
       "section": "api",
@@ -32,12 +41,21 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "ng-suggest.directive:suggest-typeahead",
+      "shortName": "suggest-typeahead",
+      "type": "directive",
+      "moduleName": "ng-suggest",
+      "shortDescription": "This directive has not been implemented yet!",
+      "keywords": "api bootstrap directive github implemented io ng-suggest requires typeahead"
+    },
+    {
+      "section": "api",
       "id": "ng-suggest.service:OpenSearchSuggestions",
       "shortName": "OpenSearchSuggestions",
       "type": "service",
       "moduleName": "ng-suggest",
       "shortDescription": "The OpenSearchSuggestions service can be used to query an OpenSearch ",
-      "keywords": "$scope $watch angular api argument character class code completion custom data de description deutsch en english exemplified form function href html http includes instanciated js json label language languages length linenums method module myapp mycontroller ng-controller ng-if ng-model ng-options ng-repeat ng-suggest ngsuggest note null object opensearch opensearchsuggestions optional org originally php prettyprint promise push query replace return returned returns script search search-query searchinfo second seealso sequence server service simplified site sites string subclass suggestions suggestservice template todo transform transformation transformed updatesearch updatesite url values var wiki wikidata wikipedia"
+      "keywords": "$scope $watch angular api character class code completion custom data de default defines description deutsch en english exemplified form function href html http includes instanciated js json jsonp label language languages length linenums method module myapp mycontroller named ng-controller ng-if ng-model ng-options ng-repeat ng-suggest ngsuggest note null object opensearch opensearchsuggestions optional org originally paramater parameter php prettyprint promise push query replace requests return returned returns script search search-query searchinfo seealso sequence server service simplified site sites string subclass suggestions suggestservice template todo transform transformation transformed updatesearch updatesite url values var wiki wikidata wikipedia"
     },
     {
       "section": "api",
@@ -53,7 +71,7 @@ NG_DOCS={
     "api": true
   },
   "html5Mode": false,
-  "startPage": "/api/ng-suggest",
+  "startPage": "/api",
   "scripts": [
     "angular.min.js",
     "ng-suggest.min.js"
