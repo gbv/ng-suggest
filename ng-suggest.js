@@ -7,21 +7,24 @@
  *
  * The AngularJS module <b>ngSuggest</b> provides access to {@link
  * http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.0
- * OpenSearch Suggestions} and SeeAlso web services for search suggestion, 
- * typeahead, inclusion of context information and links etc.
+ * OpenSearch Suggestions} and {@link http://www.gbv.de/wikis/cls/SeeAlso SeeAlso}
+ * web services for search suggestion, typeahead, inclusion of context information 
+ * and links etc.
  *
  * The module provides
  *
  * * service 
  *   {@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions}
+ *   to query an OpenSearch server for search suggestions
  * * service
  *   {@link ng-suggest.service:SeeAlso SeeAlso}
+ *   to query an SeeAlso server link suggestions
  * * directive
- *   {@link ng-suggest.directive:opensearch-suggest opensearch-suggest}
+ *   {@link ng-suggest.directive:opensearch-suggest opensearch-suggest} (DEPRECATED)
  * * directive 
- *   {@link ng-suggest.directive:seealso-server seealso-server}
- *
- * The module licensed unter AGPL. 
+ *   {@link ng-suggest.directive:seealso-server seealso-server} (TODO)
+ * * directive 
+ *   {@link ng-suggest.directive:suggest-typeahead suggest-typeahead} (TODO)
  */
 angular.module('ngSuggest', []).value('version', '0.0.1-pre');
 /**
@@ -30,17 +33,13 @@ angular.module('ngSuggest', []).value('version', '0.0.1-pre');
  * @restrict A
  * @description
  * 
- * This directive can be used to provide a typeahead input field ...
- * The current implementation of this directive will change
+ * This directive can be used to provide a typeahead input field.
+ * The demo application contains some usage example. To further
+ * facilitate the use of suggest, this directive will likely be
+ * replaced by 
+ * {@name ng-suggest.directive:suggest-typeahead}!
  *
- * Use together with/requires ui.bootstrap.typeahead
- *
- * <pre>
- *   typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
- * </pre>
- *
- * Scope variables: api, suggestions, search
- * ...
+ * The directive requires [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead).
  */
 angular.module('ngSuggest').directive('opensearchSuggest', [
   'OpenSearchSuggestions',
@@ -52,6 +51,76 @@ angular.module('ngSuggest').directive('opensearchSuggest', [
         api: '@opensearchSuggest',
         suggest: '=suggestFunction',
         jsonp: '@jsonp'
+      },
+      link: function (scope, element, attrs) {
+        scope.oss = new OpenSearchSuggestions(scope.api);
+        scope.$watch('api', function (url) {
+          scope.oss = new OpenSearchSuggestions(scope.api);
+        });
+        scope.suggest = function (value) {
+          var s = scope.oss.suggest(value);
+          return s.then(function (suggestions) {
+            return suggestions.values;
+          });
+        };
+      }
+    };
+  }
+]);
+/**
+ * @ngdoc directive
+ * @name ng-suggest.directive:seealso-server
+ * @restrict A
+ * @description
+ * 
+ * This directive has not been implemented yet!
+ *
+ * <pre class="prettyprint linenums">
+ * <!-- comma-separated -->
+ * <span seelalso-server="http://example.org/" seealso-id="123"/>
+ * <!-- list -->
+ * <ul seelalso-server="http://example.org/" seealso-id="123"/>
+ * <ol seelalso-server="http://example.org/" seealso-id="123"/>
+ * <!-- image -->
+ * <img seelalso-server="http://example.org/" seealso-id="123"/>
+ * <!-- custom template -->
+ * <div seelalso-server="http://example.org/" seealso-id="123">
+ * ...
+ * </div>
+ * <!-- custom template, referenced -->
+ * <div seelalso-server="http://example.org/" seealso-id="123" template-url="..." />
+ * </pre>
+ */
+angular.module('ngSuggest').directive('seealsoServer', [
+  'SeeAlso',
+  function (SeeAlso) {
+    return {
+      restrict: 'A',
+      link: function (scope, element, attrs) {
+      }
+    };
+  }
+]);
+/**
+ * @ngdoc directive
+ * @name ng-suggest.directive:suggest-typeahead
+ * @restrict A
+ * @description
+ * 
+ * This directive has not been implemented yet!
+ *
+ * The directive requires [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead).
+ * ...
+ */
+angular.module('ngSuggest').directive('suggestTypeahead', [
+  'OpenSearchSuggestions',
+  '$q',
+  function (OpenSearchSuggestions, $q) {
+    return {
+      restrict: 'A',
+      scope: {
+        api: '@opensearchSuggest',
+        suggest: '=suggestTypeahead'
       },
       link: function (scope, element, attrs) {
         /*
@@ -80,43 +149,6 @@ angular.module('ngSuggest').directive('opensearchSuggest', [
             return suggestions.values;
           });
         };  // TODO: see http://angular-ui.github.io/bootstrap/#/typeahead
-            // ...
-      }
-    };
-  }
-]);
-/**
- * @ngdoc directive
- * @name ng-suggest.directive:seealso-server
- * @restrict A
- * @description
- * 
- * This directive has not been implemented yet!
- *
- * <pre class="prettyprint linenums">
- * <!-- comma-separated -->
- * <span seelalso-server="http://example.org/" seealso-id="123"/>
- * <!-- list -->
- * <ul seelalso-server="http://example.org/" seealso-id="123"/>
- * <ol seelalso-server="http://example.org/" seealso-id="123"/>
- * <!-- image -->
- * <img seelalso-server="http://example.org/" seealso-id="123"/>
- * <!-- custom template -->
- * <div seelalso-server="http://example.org/" seealso-id="123">
- * ...
- * </div>
- * <!-- custom template, referenced -->
- * <div seelalso-server="http://example.org/" seealso-id="123" template-url="..." />
- * </pre>
- *
- * ...
- */
-angular.module('ngSuggest').directive('seealsoServer', [
-  'SeeAlso',
-  function (SeeAlso) {
-    return {
-      restrict: 'A',
-      link: function (scope, element, attrs) {
       }
     };
   }
@@ -158,7 +190,8 @@ angular.module('ngSuggest').directive('seealsoServer', [
  * Note that suggestions originally returned from an OpenSearch server have the
  * form `["query string"],["completion",...],["description",...],["url",...]]`,
  * so it is transformed to the form exemplified above. A custom transformation
- * function can be given as optional second argument to the constructor.
+ * function can be given as optional named parameter `transform`. The optional
+ * paramater `jsonp` (true by default) defines whether requests are done via JSONP.
  *
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
  * this service.
@@ -196,7 +229,10 @@ angular.module('ngSuggest').directive('seealsoServer', [
 
         function updateSite() {
             var url = $scope.site.url.replace('{language}', $scope.language.code);
-            $scope.suggestService = new OpenSearchSuggestions(url, $scope.site.transform);
+            $scope.suggestService = new OpenSearchSuggestions({
+                url: url, 
+                transform: $scope.site.transform,
+            });
             updateSearch($scope.search);
         };
 
@@ -259,19 +295,25 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
       return suggestions;
     };
     // constructor
-    var OpenSearchSuggestions = function (url, transform) {
-      if (url && url.indexOf('{searchTerms}') == -1) {
-        url = url + '{searchTerms}';
+    var OpenSearchSuggestions = function (args) {
+      if (!angular.isObject(args))
+        args = { url: args };
+      this.url = args.url;
+      if (this.url && this.url.indexOf('{searchTerms}') == -1) {
+        this.url += '{searchTerms}';
       }
-      this.url = url;
-      this.transform = transform ? transform : transformSuggestions;
+      this.transform = args.transform ? args.transform : transformSuggestions;
+      this.jsonp = typeof args.jsonp === 'undefined' ? 1 : args.jsonp;
     };
     // methods
     OpenSearchSuggestions.prototype = {
       suggest: function (searchTerms) {
         if (!this.url)
           return $q.reject(null);
-        var url = this.url.replace('{searchTerms}', decodeURIComponent(searchTerms)) + '&callback=JSON_CALLBACK';
+        var url = this.url.replace('{searchTerms}', decodeURIComponent(searchTerms));
+        if (this.jsonp) {
+          url += '&callback=JSON_CALLBACK';
+        }
         var transform = this.transform;
         return $http.jsonp(url).then(function (response) {
           // TODO: catch failure of transformation
@@ -332,9 +374,11 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
 angular.module('ngSuggest').factory('SeeAlso', [
   'OpenSearchSuggestions',
   function (OpenSearchSuggestions) {
-    function SeeAlso(url, transform) {
-      url += '?id={searchTerms}&format=seealso';
-      OpenSearchSuggestions.call(this, url, transform);
+    function SeeAlso(args) {
+      if (!angular.isObject(args))
+        args = { url: args };
+      args.url += '?id={searchTerms}&format=seealso';
+      OpenSearchSuggestions.call(this, args);
     }
     ;
     SeeAlso.prototype = new OpenSearchSuggestions();

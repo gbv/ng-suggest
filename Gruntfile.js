@@ -10,26 +10,34 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-ngmin');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-version');
+    grunt.loadNpmTasks('grunt-template');
 
     grunt.initConfig({
         pkg: require('./package.json'),
-        version: {
+        version: { // take version number from package.json
             moduleVersion: {
                 options: {
                     prefix: "\\('version',\\s*'"
                 },
                 src: ['src/*.js']
             },
-            ngdocVersion: {
-                options: { prefix: 'version ' },
-                src: ['src/*.js']
+        },
+        template: {
+            index: {
+                options: {
+                     data: function() { 
+                        return grunt.config.get('pkg'); 
+                    }
+                },
+                files: {
+                    'src/index.ngdoc': ['src/index.ngdoc.tpl']
+                }
             }
         },
         ngdocs: {
             options: {
                 html5Mode: false,
-                startPage: '/api/ng-suggest',
-                titleLink: '#/api/ng-suggest',
+                titleLink: '#/api',
                 navTemplate: 'src/docs-nav.html',
                 scripts: [ 
                     'angular.js',
@@ -39,7 +47,8 @@ module.exports = function(grunt) {
             },
             api: {
                 title: 'Documentation',
-                src: [ 'src/*.js', 'src/**/*.js' ],
+                src: [ 'src/*.js', 'src/**/*.js', 'src/*.ngdoc' ],
+                api: true,
             },
         },
         connect: {
@@ -106,6 +115,10 @@ module.exports = function(grunt) {
             }
         },
         shell: {
+            demo: {
+                // TODO: use ng-suggest.min.js instead of partials
+                command: "rm -rf docs/demo && cp -r demo docs"
+            },
             site: {
                 command: "rm -rf site && mkdir site && cp -r docs/* site"
             },
@@ -137,7 +150,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default',['docs']);
     grunt.registerTask('ng-suggest',['version','ngtemplates','concat','ngmin','uglify']);
-    grunt.registerTask('docs',['clean','ng-suggest','ngdocs']);
+    grunt.registerTask('docs',['clean','ng-suggest','template','ngdocs','shell:demo']);
     grunt.registerTask('gh-pages', ['shell:working_copy_must_be_clean','site','shell:gh_pages']);
     grunt.registerTask('push-site', ['gh-pages','shell:push_site']);
     grunt.registerTask('site', ['docs','shell:site']);

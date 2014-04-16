@@ -42,9 +42,10 @@
  */
 angular.module('ngSuggest')
 .factory('SeeAlso', function(OpenSearchSuggestions) {
-    function SeeAlso(url, transform) {
-        url += "?id={searchTerms}&format=seealso";
-        OpenSearchSuggestions.call(this,url,transform);
+    function SeeAlso(args) {
+        if (!angular.isObject(args)) args = { url: args };
+        args.url += "?id={searchTerms}&format=seealso";
+        OpenSearchSuggestions.call(this,args);
     };
     SeeAlso.prototype = new OpenSearchSuggestions();
     return SeeAlso;
