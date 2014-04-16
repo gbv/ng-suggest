@@ -43,20 +43,20 @@
             </p>
         </div>
         <div class="col-md-6">
-            <pre>Input: {{input[0] | json}}</pre>
-            <pre>suggest: {{api[0]}}</pre>
-            <input ng-model="input[0]" 
-                   opensearch-suggest="{{api[0]}}"
+            <pre>Input: {{example[0].input | json}}</pre>
+            <pre>suggest: {{example[0].api}}</pre>
+            <input ng-model="example[0].input" 
+                   opensearch-suggest="{{example[0].api}}"
                    suggest-function="suggest1"
                    typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
                    typeahead-template-url="sampleTemplate1.html" 
                    typeahead-loading="loadingLocations1"
                    class="form-control"
                    typeahead-editable="false"
-                   typeahead-on-select="onSelect1($item, $model, $label)"/>
+                   typeahead-on-select="example[0].onSelect($item)"/>
             <i ng-show="loadingLocations1" class="glyphicon glyphicon-refresh"></i>
 					<div class="res-link">
-            <a href="{{$item1.url}}">{{$item1.url}}</a>
+            <a href="{{example[0].item.url}}">{{example[0].item.url}}</a>
 					</div>
         </div>
     </div>
@@ -80,19 +80,19 @@
             </p>
         </div>
         <div class="col-md-6">
-            <pre>Input: {{input[1] | json}}</pre>
-            <pre>API: {{api[1]}}</pre>
-            <input ng-model="input[1]" 
-               opensearch-suggest="{{api[1]}}"
+            <pre>Input: {{example[1].input | json}}</pre>
+            <pre>API: {{example[1].api}}</pre>
+            <input ng-model="example[1].input" 
+               opensearch-suggest="{{example[1].api}}"
                suggest-function="suggest2"
                typeahead="item.label for item in suggest2($viewValue) | filter:$viewValue"
                typeahead-template-url="sampleTemplate2.html" 
                typeahead-loading="loadingLocations2"
                class="form-control"
-							 typeahead-on-select="onSelect2($item, $model, $label)"/>
+							 typeahead-on-select="example[1].onSelect($item)"/>
             <i ng-show="loadingLocations2" class="glyphicon glyphicon-refresh"></i>
             <div class="res-link">
-							<a href="{{$item2.url}}?format=xml">{{$item2.url}}</a>
+							<a href="{{example[1].item.url}}?format=xml">{{example[1].item.url}}</a>
             </div>
         </div>
     </div>
@@ -113,19 +113,19 @@
             </p>
         </div>
         <div class="col-md-6">
-            <pre>Input: {{input[2] | json}}</pre>
-            <pre>API: {{api[2]}}</pre>
-            <input ng-model="input[2]" 
-               opensearch-suggest="{{api[2]}}"
+            <pre>Input: {{example[2].input | json}}</pre>
+            <pre>API: {{example[2].api}}</pre>
+            <input ng-model="example[2].input" 
+               opensearch-suggest="{{example[2].api}}"
                suggest-function="suggest3"
                typeahead="item.label for item in suggest3($viewValue) | filter:$viewValue"
                typeahead-template-url="sampleTemplate3.html" 
                typeahead-loading="loadingLocations3"
                class="form-control" 
-               typeahead-on-select="onSelect3($item, $model, $label)"/>
+               typeahead-on-select="example[2].onSelect($item)"/>
             <i ng-show="loadingLocations3" class="glyphicon glyphicon-refresh"></i>
             <div class="res-link">
-            <a href="{{$item3.url}}">{{$item3.url}}</a>
+            <a href="{{example[2].item.url}}">{{example[2].item.url}}</a>
             </div>
         </div>
 		</div>
@@ -146,16 +146,16 @@
             </p>
         </div>
         <div class="col-md-6">
-            <pre>Input: {{input[3] | json}}</pre>
-            <pre>API: {{api[3]}}</pre>
-            <input ng-model="input[3]" 
-                   opensearch-suggest="{{api[3]}}"
+            <pre>Input: {{example[3].input | json}}</pre>
+            <pre>API: {{example[3].api}}</pre>
+            <input ng-model="example[3].input" 
+                   opensearch-suggest="{{example[3].api}}"
                    suggest-function="suggest4"
                    typeahead="item.label for item in suggest4($viewValue) | filter:$viewValue"
                    typeahead-template-url="sampleTemplate4.html" 
                    typeahead-loading="loadingLocations4"
                    class="form-control" 
-									 typeahead-on-select="onSelect5($item, $model, $label)"/>
+									 typeahead-on-select="example[3].onSelect($item)"/>
             <i ng-show="loadingLocations5" class="glyphicon glyphicon-refresh"></i>
         </div>
         <div class="col-md-6">
