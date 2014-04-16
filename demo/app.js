@@ -26,6 +26,4 @@ function myController($scope) {
 				console.log(item)
 			}
 		}
-		
-		console.log($scope.onSelect);
 }

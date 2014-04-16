@@ -19,7 +19,7 @@
         <div class="col-md-12">
             <h2>Typeahead via OpenSearch Suggest</h2>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <a href="http://opensearch.org">OpenSearch</a> ist ein System, das Regeln für eine standardisierte Rückgabe von Suchergebnissen aufstellt. Es wird von vielen Seiten verwendet und wird von den meisten Browsern unterstützt. Suggest-Dienste geben Vorschläge für Autovervollständigung von Suchbegriffen. Einige Beispiele auf Basis von AngularJS (mit dem Bootstrap-Layout) werden hier präsentiert.
         </div>
 		</div>
@@ -28,11 +28,11 @@
             <h3>geonames</h3>
         </div>
             <script type="text/ng-template" id="sampleTemplate1.html">
-            <div class="item">
-							<div class="item-label">
+            <div class="suggest-item">
+							<div class="suggest-item-label">
 								<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
 							</div>
-							<div class="item-description">
+							<div class="suggest-item-description">
 								{{match.model.description}}
 							</div>
 						</div>
@@ -43,8 +43,6 @@
             </p>
         </div>
         <div class="col-md-6">
-            <pre>Input: {{example[0].input | json}}</pre>
-            <pre>suggest: {{example[0].api}}</pre>
             <input ng-model="example[0].input" 
                    opensearch-suggest="{{example[0].api}}"
                    suggest-function="suggest1"
@@ -55,8 +53,11 @@
                    typeahead-editable="false"
                    typeahead-on-select="example[0].onSelect($item)"/>
             <i ng-show="loadingLocations1" class="glyphicon glyphicon-refresh"></i>
-					<div class="res-link">
-            <a href="{{example[0].item.url}}">{{example[0].item.url}}</a>
+					<div style="margin-top:10px" ng-if="example[0].item.description.length">
+						<b>Description:</b> {{example[0].item.description}}
+					</div>
+					<div ng-if="example[0].item.url.length" style="margin-top:10px">
+            <b>URL:</b> <a href="{{example[0].item.url}}">{{example[0].item.url}}</a>
 					</div>
         </div>
     </div>
@@ -65,11 +66,11 @@
             <h3>gn250</h3>
         </div>
         <script type="text/ng-template" id="sampleTemplate2.html">
-					<div class="item">
-						<div class="item-label">
+					<div class="suggest-item">
+						<div class="suggest-item-label">
 							<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
 						</div>
-						<div class="item-description">
+						<div class="suggest-item-description">
 							{{match.model.description}}
 						</div>
 					</div>
@@ -80,8 +81,6 @@
             </p>
         </div>
         <div class="col-md-6">
-            <pre>Input: {{example[1].input | json}}</pre>
-            <pre>API: {{example[1].api}}</pre>
             <input ng-model="example[1].input" 
                opensearch-suggest="{{example[1].api}}"
                suggest-function="suggest2"
@@ -91,8 +90,11 @@
                class="form-control"
 							 typeahead-on-select="example[1].onSelect($item)"/>
             <i ng-show="loadingLocations2" class="glyphicon glyphicon-refresh"></i>
-            <div class="res-link">
-							<a href="{{example[1].item.url}}?format=xml">{{example[1].item.url}}</a>
+					<div style="margin-top:10px" ng-if="example[1].item.description.length">
+						<b>Description:</b> {{example[1].item.description}}
+					</div>
+            <div ng-if="example[1].item.url.length" style="margin-top:10px">
+							<b>URL:</b> <a href="{{example[1].item.url}}?format=xml">{{example[1].item.url}}</a>
             </div>
         </div>
     </div>
@@ -101,8 +103,8 @@
             <h3>gnd</h3>
         </div>
         <script type="text/ng-template" id="sampleTemplate3.html">
-					<div class="item">
-						<div class="item-label">
+					<div class="suggest-item">
+						<div class="suggest-item-label">
 							<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
 						</div>
 					</div>
@@ -113,8 +115,6 @@
             </p>
         </div>
         <div class="col-md-6">
-            <pre>Input: {{example[2].input | json}}</pre>
-            <pre>API: {{example[2].api}}</pre>
             <input ng-model="example[2].input" 
                opensearch-suggest="{{example[2].api}}"
                suggest-function="suggest3"
@@ -124,8 +124,8 @@
                class="form-control" 
                typeahead-on-select="example[2].onSelect($item)"/>
             <i ng-show="loadingLocations3" class="glyphicon glyphicon-refresh"></i>
-            <div class="res-link">
-            <a href="{{example[2].item.url}}">{{example[2].item.url}}</a>
+            <div ng-if="example[2].item.url.length" style="margin-top:10px">
+            <b>URL:</b> <a href="{{example[2].item.url}}">{{example[2].item.url}}</a>
             </div>
         </div>
 		</div>
@@ -133,9 +133,9 @@
       <div class="col-md-12">
         <h3>Wikipedia</h3>
       </div>
-        <script type="text/ng-template" id="sampleTemplate5.html">
-				<div class="item">
-					<div class="item-label">
+        <script type="text/ng-template" id="sampleTemplate4.html">
+				<div class="suggest-item">
+					<div class="suggest-item-label">
 					<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
 					</div>
         </div>
@@ -146,8 +146,6 @@
             </p>
         </div>
         <div class="col-md-6">
-            <pre>Input: {{example[3].input | json}}</pre>
-            <pre>API: {{example[3].api}}</pre>
             <input ng-model="example[3].input" 
                    opensearch-suggest="{{example[3].api}}"
                    suggest-function="suggest4"
@@ -158,9 +156,11 @@
 									 typeahead-on-select="example[3].onSelect($item)"/>
             <i ng-show="loadingLocations5" class="glyphicon glyphicon-refresh"></i>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
+					<div style="float:right">
               ng-suggest is based on 
               <a href="http://angular-ui.github.io/bootstrap/#/typeahead">ui.bootstrap.typeahead</a>.
+					</div>
         </div>
 		</div>
 </body>
