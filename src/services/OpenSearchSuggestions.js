@@ -35,7 +35,8 @@
  * Note that suggestions originally returned from an OpenSearch server have the
  * form `["query string"],["completion",...],["description",...],["url",...]]`,
  * so it is transformed to the form exemplified above. A custom transformation
- * function can be given as optional second argument to the constructor.
+ * function can be given as optional named parameter `transform`. The optional
+ * paramater `jsonp` (true by default) defines whether requests are done via JSONP.
  *
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
  * this service.
@@ -73,7 +74,10 @@
 
         function updateSite() {
             var url = $scope.site.url.replace('{language}', $scope.language.code);
-            $scope.suggestService = new OpenSearchSuggestions(url, $scope.site.transform);
+            $scope.suggestService = new OpenSearchSuggestions({
+                url: url, 
+                transform: $scope.site.transform,
+            });
             updateSearch($scope.search);
         };
 
@@ -134,12 +138,15 @@ angular.module('ngSuggest')
     };
 
     // constructor
-    var OpenSearchSuggestions = function(url, transform) {
-        if (url && url.indexOf('{searchTerms}') == -1) {
-            url = url + '{searchTerms}';
+    var OpenSearchSuggestions = function(args) {
+        if (!angular.isObject(args)) args = { url: args };
+
+        this.url = args.url;
+        if (this.url && this.url.indexOf('{searchTerms}') == -1) {
+            this.url += '{searchTerms}';
         }
-        this.url = url;
-        this.transform = transform ? transform : transformSuggestions;
+        this.transform = args.transform ? args.transform : transformSuggestions;
+        this.jsonp = (typeof args.jsonp === 'undefined') ? 1 : args.jsonp;
     };
 
     // methods
@@ -147,8 +154,10 @@ angular.module('ngSuggest')
         suggest: function(searchTerms) {
             if (!this.url) return $q.reject(null);
 
-            var url = this.url.replace('{searchTerms}', decodeURIComponent(searchTerms))
-                    + '&callback=JSON_CALLBACK';
+            var url = this.url.replace('{searchTerms}', decodeURIComponent(searchTerms));
+            if (this.jsonp) {
+               url += '&callback=JSON_CALLBACK';
+            }
             var transform = this.transform;
 
             return $http.jsonp(url).then(function(response) {
