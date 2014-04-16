@@ -115,6 +115,10 @@ module.exports = function(grunt) {
             }
         },
         shell: {
+            demo: {
+                // TODO: use ng-suggest.min.js instead of partials
+                command: "rm -rf docs/demo && cp -r demo docs"
+            },
             site: {
                 command: "rm -rf site && mkdir site && cp -r docs/* site"
             },
@@ -146,7 +150,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default',['docs']);
     grunt.registerTask('ng-suggest',['version','ngtemplates','concat','ngmin','uglify']);
-    grunt.registerTask('docs',['clean','ng-suggest','template','ngdocs']);
+    grunt.registerTask('docs',['clean','ng-suggest','template','ngdocs','shell:demo']);
     grunt.registerTask('gh-pages', ['shell:working_copy_must_be_clean','site','shell:gh_pages']);
     grunt.registerTask('push-site', ['gh-pages','shell:push_site']);
     grunt.registerTask('site', ['docs','shell:site']);

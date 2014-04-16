@@ -20,7 +20,7 @@
  *   {@link ng-suggest.service:SeeAlso SeeAlso}
  *   to query an SeeAlso server link suggestions
  * * directive
- *   {@link ng-suggest.directive:opensearch-suggest opensearch-suggest} (FIXME)
+ *   {@link ng-suggest.directive:opensearch-suggest opensearch-suggest} (DEPRECATED)
  * * directive 
  *   {@link ng-suggest.directive:seealso-server seealso-server} (TODO)
  * * directive 

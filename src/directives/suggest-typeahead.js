@@ -4,16 +4,9 @@
  * @restrict A
  * @description
  * 
- * This directive can be used to provide a typeahead input field ...
- * The current implementation of this directive will change
+ * This directive has not been implemented yet!
  *
- * Use together with/requires ui.bootstrap.typeahead
- *
- * <pre>
- *   typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
- * </pre>
- *
- * Scope variables: api, suggestions, search
+ * The directive requires [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead).
  * ...
  */
 angular.module('ngSuggest')
@@ -22,21 +15,19 @@ angular.module('ngSuggest')
     return {
         restrict: 'A',
 /*
+   typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
    <input ng-model="input1" 
-
           suggest-typeahead="http://..."
           suggest-typeahead="{{service}}
-
 // TODO: ADD THIS AUTOMATICALLY:          
           suggest-function="suggest1" // suggest function in the parent scope
-
           typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
-
  */
         scope: {
             api: '@opensearchSuggest',
             suggest: '=suggestTypeahead', // TODO: default value
 //            jsonp: '@jsonp', // TODO
+//            search
         },
         link: function(scope,element,attrs) {
             /*
@@ -70,7 +61,6 @@ angular.module('ngSuggest')
                 })
             };
             // TODO: see http://angular-ui.github.io/bootstrap/#/typeahead
-            // ...
         }
     };
 }]);

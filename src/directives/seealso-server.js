@@ -21,8 +21,6 @@
  * <!-- custom template, referenced -->
  * <div seelalso-server="http://example.org/" seealso-id="123" template-url="..." />
  * </pre>
- *
- * ...
  */
 angular.module('ngSuggest')
 .directive('seealsoServer',['SeeAlso',function(SeeAlso){
