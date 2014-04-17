@@ -23,9 +23,6 @@ function myController($scope) {
 		function selectFunction(i) {
 			return function (item) {
 				$scope.example[i].item = item;
-				console.log(item)
 			}
 		}
-		
-		console.log($scope.onSelect);
 }
