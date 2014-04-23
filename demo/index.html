@@ -7,10 +7,11 @@
   <link href="app.css" rel="stylesheet" />
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
   <script src="../src/ngSuggest.js"></script>
   <script src="../src/services/OpenSearchSuggestions.js"></script>
   <script src="../src/directives/opensearch-suggest.js"></script>
+  <script src="../src/directives/suggest-typeahead.js"></script>
   <script src="app.js"></script>
 </head>
 <body ng-controller="myController">
@@ -44,14 +45,13 @@
         </div>
         <div class="col-md-6">
             <input ng-model="example[0].input" 
-                   opensearch-suggest="{{example[0].api}}"
-                   suggest-function="suggest1"
-                   typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
+                   suggest-typeahead="{{example[0].api}}" 
+                   typeahead-on-select="example[0].onSelect($item)"
+                   typeahead-editable="false"
                    typeahead-template-url="sampleTemplate1.html" 
                    typeahead-loading="loadingLocations1"
                    class="form-control"
-                   typeahead-editable="false"
-                   typeahead-on-select="example[0].onSelect($item)"/>
+                />
             <i ng-show="loadingLocations1" class="glyphicon glyphicon-refresh"></i>
 					<div style="margin-top:10px" ng-if="example[0].item.description.length">
 						<b>Description:</b> {{example[0].item.description}}

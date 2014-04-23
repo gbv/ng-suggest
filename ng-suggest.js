@@ -190,8 +190,12 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
  * Note that suggestions originally returned from an OpenSearch server have the
  * form `["query string"],["completion",...],["description",...],["url",...]]`,
  * so it is transformed to the form exemplified above. A custom transformation
- * function can be given as optional named parameter `transform`. The optional
- * paramater `jsonp` (true by default) defines whether requests are done via JSONP.
+ * function can be given as optional named parameter `transform`. Use 
+ * `function(s) { return s; }` to get the original, untransformed response.
+ * Transformation errors are catched and passed as rejection of the promise.
+ *
+ * The optional paramater `jsonp` (true by default) defines whether requests are 
+ * done via JSONP.
  *
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
  * this service.
@@ -222,9 +226,10 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
     function myController($scope, OpenSearchSuggestions) {
 
         function updateSearch(search) {
-            $scope.suggestService.suggest(search).then(function(data) {
-                $scope.suggestions = data;
-            }); // TODO: else $scope.suggestions = null;
+            $scope.suggestService.suggest(search).then(
+                function(data) { $scope.suggestions = data; },
+                function() { $scope.suggestions = null; }
+            );
         }
 
         function updateSite() {
@@ -308,20 +313,21 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
     // methods
     OpenSearchSuggestions.prototype = {
       suggest: function (searchTerms) {
-        if (!this.url)
+        if (!this.url) {
           return $q.reject(null);
+        }
         var url = this.url.replace('{searchTerms}', decodeURIComponent(searchTerms));
         if (this.jsonp) {
           url += '&callback=JSON_CALLBACK';
         }
         var transform = this.transform;
         return $http.jsonp(url).then(function (response) {
-          // TODO: catch failure of transformation
-          var suggestions = transform(response.data);
-          // return $q.reject(response.data);
-          return suggestions;
+          try {
+            return transform(response.data);
+          } catch (e) {
+            return $q.reject(e);
+          }
         }, function (response) {
-          // error
           return $q.reject(response.data);
         });
       }

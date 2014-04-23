@@ -1,10 +1,10 @@
-# opensearch-suggest [![Build Status](https://travis-ci.org/gbv/opensearch-suggest.png?branch=master)](https://travis-ci.org/gbv/opensearch-suggest)
+# ng-suggest [![Build Status](https://travis-ci.org/gbv/ng-suggest.png?branch=master)](https://travis-ci.org/gbv/ng-suggest)
 
 > [AngularJS](http://angularjs.org/) module to provide Typeahead via [OpenSearch Suggestions](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.0)
 
 ## Usage and documentation
 
-See <http://gbv.github.io/opensearch-suggest/>.
+See <http://gbv.github.io/ng-suggest/>.
 
 ## Requirements
 
@@ -12,7 +12,7 @@ Require AngularJS >= 1.2.
 
 ## Development
 
-First, **clone** the repository from <https://github.com/gbv/opensearch-suggest>.
+First, **clone** the repository from <https://github.com/gbv/ng-suggest>.
 
 Second, install Node.js unless it is already installed. Node.js includes `npm`
 to install additional packages. Locally **install all required packages**
@@ -33,7 +33,7 @@ For contious testing (tests are re-run on changes), call:
     grunt watch
 
 As configured in `.travis.yml` the tests are automatically 
-[executed at travis-ci](https://travis-ci.org/gbv/opensearch-suggest)
+[executed at travis-ci](https://travis-ci.org/gbv/ng-suggest)
 when pushed to GitHub.
 
 To build the **documentation**, written using

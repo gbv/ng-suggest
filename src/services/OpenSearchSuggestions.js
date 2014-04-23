@@ -151,7 +151,8 @@ angular.module('ngSuggest')
             this.url += '{searchTerms}';
         }
         this.transform = args.transform ? args.transform : transformSuggestions;
-        this.jsonp = (typeof args.jsonp === 'undefined') ? 1 : args.jsonp;
+        this.jsonp = (typeof args.jsonp === 'undefined' || args.jsonp === "") 
+                   ? true : !!args.jsonp;
     };
 
     // method
