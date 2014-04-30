@@ -79,7 +79,7 @@ module.exports = function(grunt) {
                 dest: 'ng-suggest-templates.js',
             },
             options: {
-                module: 'opensearchSuggest',
+                module: 'ngSuggest',
                 prefix: 'template/',
                 htmlmin: {
                     collapseBooleanAttributes: true,

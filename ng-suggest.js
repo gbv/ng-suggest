@@ -37,14 +37,13 @@ angular.module('ngSuggest', []).value('version', '0.0.1-pre');
  * The demo application contains some usage example. To further
  * facilitate the use of suggest, this directive will likely be
  * replaced by 
- * {@name ng-suggest.directive:suggest-typeahead}!
+ * {@name ng-suggest.directive:suggest-typeahead suggest-typeahead}!
  *
  * The directive requires [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead).
  */
 angular.module('ngSuggest').directive('opensearchSuggest', [
   'OpenSearchSuggestions',
-  '$q',
-  function (OpenSearchSuggestions, $q) {
+  function (OpenSearchSuggestions) {
     return {
       restrict: 'A',
       scope: {
@@ -53,12 +52,14 @@ angular.module('ngSuggest').directive('opensearchSuggest', [
         jsonp: '@jsonp'
       },
       link: function (scope, element, attrs) {
-        scope.oss = new OpenSearchSuggestions(scope.api);
         scope.$watch('api', function (url) {
-          scope.oss = new OpenSearchSuggestions(scope.api);
+          scope.suggestions = new OpenSearchSuggestions({
+            url: scope.api,
+            jsonp: scope.jsonp
+          });
         });
         scope.suggest = function (value) {
-          var s = scope.oss.suggest(value);
+          var s = scope.suggestions.suggest(value);
           return s.then(function (suggestions) {
             return suggestions.values;
           });
@@ -107,52 +108,68 @@ angular.module('ngSuggest').directive('seealsoServer', [
  * @restrict A
  * @description
  * 
- * This directive has not been implemented yet!
+ * The directive enables
+ * [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead)
+ * search suggestions from an OpenSearch Suggestions server. All options of
+ * typeahead directive (e.g. `typeahead-on-select`) can be used.
  *
- * The directive requires [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead).
- * ...
  */
 angular.module('ngSuggest').directive('suggestTypeahead', [
   'OpenSearchSuggestions',
-  '$q',
-  function (OpenSearchSuggestions, $q) {
+  '$injector',
+  function (OpenSearchSuggestions, $injector) {
     return {
       restrict: 'A',
       scope: {
-        api: '@opensearchSuggest',
-        suggest: '=suggestTypeahead'
+        api: '@suggestTypeahead',
+        jsonp: '@jsonp'
       },
-      link: function (scope, element, attrs) {
-        /*
-            var suggestFunction = attrs.suggestFunction;
-            if (suggestFunction) {
-                if (!attrs.typeahead) {
-                    attrs.typeahead.suggestFunction = "item.label for item in SUGGEST($viewValue) | filter:$viewValue"
-                }
-                attrs.typeahead = attrs.typeahead.replace('SUGGEST',suggestFunction);
-            }
-            */
-        // TODO: inspect attrs.typeahead and replace SUGGEST with actual function name
-        // namer "name($viewValue)"
-        // create this function if not defined
-        //            parentScope.osscounter
-        // TODO: if api is URL => create oss
-        // if api is service object ...
-        // if api is function
-        scope.oss = new OpenSearchSuggestions(scope.api);
-        scope.$watch('api', function (url) {
-          scope.oss = new OpenSearchSuggestions(scope.api);
-        });
-        scope.suggest = function (value) {
-          var s = scope.oss.suggest(value);
-          return s.then(function (suggestions) {
-            return suggestions.values;
+      require: 'ngModel',
+      compile: function (element, attrs) {
+        // defines scope.service and scope.suggest
+        function suggestLink(scope, element, attrs) {
+          // create an OpenSearchSuggestions service instance
+          scope.$watch('api', function (url) {
+            scope.service = new OpenSearchSuggestions({
+              url: scope.api,
+              jsonp: scope.jsonp
+            });
           });
-        };  // TODO: see http://angular-ui.github.io/bootstrap/#/typeahead
+          // create suggest function that queries the service
+          scope.suggest = function (value) {
+            var s = scope.service.suggest(value);
+            return s.then(function (suggestions) {
+              return suggestions.values;
+            });
+          };
+        }
+        // insert typeahead directive, if not explicitly given
+        var typeaheadLink = function () {
+        };
+        if (!attrs.typeahead) {
+          if (!$injector.has('typeaheadDirective')) {
+            throw new Error('ui.bootstrap.typehead directive required!');
+          }
+          var expr = 'item.label for item in suggest($viewValue) | filter:$viewValue';
+          attrs.$set('typeahead', expr);
+          var directive = $injector.get('typeaheadDirective')[0];
+          typeaheadLink = directive.compile(element, attrs);
+        }
+        // call both link functions
+        return function (scope, element, attrs, controller) {
+          suggestLink(scope, element, attrs, controller);
+          typeaheadLink(scope, element, attrs, controller);
+        };
       }
     };
   }
 ]);
+// TODO: if api is URL => create oss
+// if api is service object ...
+// if api is function
+//   <input ng-model="input1" 
+//          suggest-typeahead="http://..."
+//          suggest-typeahead="{{service}}
 /**
  * @ngdoc service
  * @name ng-suggest.service:OpenSearchSuggestions
@@ -280,7 +297,7 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
   '$http',
   '$q',
   function ($http, $q) {
-    // transform suggestions to object
+    // transform suggestions array to object
     var transformSuggestions = function (data) {
       var suggestions = {
           query: data[0],
@@ -308,9 +325,9 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
         this.url += '{searchTerms}';
       }
       this.transform = args.transform ? args.transform : transformSuggestions;
-      this.jsonp = typeof args.jsonp === 'undefined' ? 1 : args.jsonp;
+      this.jsonp = typeof args.jsonp === 'undefined' || args.jsonp === '' ? true : !!args.jsonp;
     };
-    // methods
+    // method
     OpenSearchSuggestions.prototype = {
       suggest: function (searchTerms) {
         if (!this.url) {
