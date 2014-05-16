@@ -10,6 +10,10 @@
  * replaced by 
  * {@name ng-suggest.directive:suggest-typeahead suggest-typeahead}!
  *
+ * # Source code
+ * 
+ * The most recent [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/opensearchSuggest.js) of this directive is available on GitHub.
+ * 
  * The directive requires [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead).
  */
 angular.module('ngSuggest')

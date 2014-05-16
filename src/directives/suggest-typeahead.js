@@ -9,6 +9,10 @@
  * search suggestions from an OpenSearch Suggestions server. All options of
  * typeahead directive (e.g. `typeahead-on-select`) can be used.
  *
+ * # Source code
+ * 
+ * The most recent [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/suggestTypeahead.js) of this directive is available at GitHub.
+ * 
  */
 angular.module('ngSuggest').directive('suggestTypeahead',[
     'OpenSearchSuggestions','$injector',

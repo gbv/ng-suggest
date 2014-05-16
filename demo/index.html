@@ -1,167 +1,174 @@
 <!doctype html>
 <html ng-app="myApp">
 <head>
-  <meta charset="utf-8">
-  <title>ng-suggest demo</title>
-  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="app.css" rel="stylesheet" />
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
-  <script src="../src/ngSuggest.js"></script>
-  <script src="../src/services/OpenSearchSuggestions.js"></script>
-  <script src="../src/directives/opensearch-suggest.js"></script>
-  <script src="../src/directives/suggest-typeahead.js"></script>
-  <script src="app.js"></script>
+    <meta charset="utf-8">
+    <title>ng-suggest demo</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="app.css" rel="stylesheet" />
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
+    <script src="../src/ngSuggest.js"></script>
+    <script src="../src/services/OpenSearchSuggestions.js"></script>
+    <script src="../src/directives/opensearch-suggest.js"></script>
+    <script src="../src/directives/suggest-typeahead.js"></script>
+    <script src="app.js"></script>
 </head>
 <body ng-controller="myController">
-  <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Typeahead via OpenSearch Suggest</h2>
+    <div class="container">
+        <div class="row">
+            <div style="margin-top:100px" class="col-md-12">
+                <h2>Typeahead via OpenSearch Suggest</h2>
+            </div>
+            <div class="col-md-12">
+                <a href="http://opensearch.org">OpenSearch</a> defines a set of rules for the open return of search queries. The format is supported by several big sites, including Wikipedia, and by all major browsers. Suggest services are used for providing autocomplete functions for search queries, and are prevalent in todays internet experience. This demo showcases the implementation of some OpenSearch Suggest services with AngularJS.
+            </div>
         </div>
-        <div class="col-md-12">
-            <a href="http://opensearch.org">OpenSearch</a> ist ein System, das Regeln für eine standardisierte Rückgabe von Suchergebnissen aufstellt. Es wird von vielen Seiten verwendet und wird von den meisten Browsern unterstützt. Suggest-Dienste geben Vorschläge für Autovervollständigung von Suchbegriffen. Einige Beispiele auf Basis von AngularJS (mit dem Bootstrap-Layout) werden hier präsentiert.
-        </div>
-		</div>
-		<div class="row">
-        <div class="col-md-12">
-            <h3>geonames</h3>
-        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>geonames</h3>
+            </div>
             <script type="text/ng-template" id="sampleTemplate1.html">
-            <div class="suggest-item">
-							<div class="suggest-item-label">
-								<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-							</div>
-							<div class="suggest-item-description">
-								{{match.model.description}}
-							</div>
-						</div>
+                <div class="suggest-item">
+                    <div class="suggest-item-label">
+                        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+                    </div>
+                    <div class="suggest-item-description">
+                        {{match.model.description}}
+                    </div>
+                </div>
             </script>
-        <div class="col-md-6">
-            <p>
-                In der geonames Suggest-Datenbank sind Orte in Deutschland mit Links zu ihrer Geonames-Seite (<a href="http://geonames.org">geonames.org/</a>) hinterlegt.
-            </p>
-        </div>
-        <div class="col-md-6">
-            <input ng-model="example[0].input" 
-                   suggest-typeahead="{{example[0].api}}" 
-                   typeahead-on-select="example[0].onSelect($item)"
-                   typeahead-editable="false"
-                   typeahead-template-url="sampleTemplate1.html" 
-                   typeahead-loading="loadingLocations1"
-                   class="form-control"
+            <div class="col-md-6">
+                <p>
+                    Geonames (<a href="http://geonames.org">geonames.org/</a>) provides a lot of data for geographic places. This includes coordinates and markings on a map, as well as other contextual information.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <input style="width:400px" ng-model="example[0].input" 
+                    opensearch-suggest="{{example[0].api}}"
+                    suggest-function="suggest1"
+                    typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
+                    typeahead-on-select="example[0].onSelect($item)"
+                    typeahead-editable="false"
+                    typeahead-template-url="sampleTemplate1.html" 
+                    typeahead-loading="loadingLocations1"
+                    class="form-control"
                 />
-            <i ng-show="loadingLocations1" class="glyphicon glyphicon-refresh"></i>
-					<div style="margin-top:10px" ng-if="example[0].item.description.length">
-						<b>Description:</b> {{example[0].item.description}}
-					</div>
-					<div ng-if="example[0].item.url.length" style="margin-top:10px">
-            <b>URL:</b> <a href="{{example[0].item.url}}">{{example[0].item.url}}</a>
-					</div>
+                <i ng-show="loadingLocations1" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
+                <div style="margin-top:10px" ng-if="example[0].item.description.length">
+                    <b>Description:</b> {{example[0].item.description}}
+                </div>
+                <div ng-if="example[0].item.url.length" style="margin-top:10px">
+                    <b>URL:</b> <a href="{{example[0].item.url}}">{{example[0].item.url}}</a>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h3>gn250</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>gn250</h3>
+            </div>
+            <script type="text/ng-template" id="sampleTemplate2.html">
+                <div class="suggest-item">
+                    <div class="suggest-item-label">
+                        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+                    </div>
+                    <div class="suggest-item-description">
+                        {{match.model.description}}
+                    </div>
+                </div>
+            </script>
+            <div class="col-md-6">
+                <p>
+                GN250 contains data from the <a href="http://www.geodatenzentrum.de/geodaten/gdz_rahmen.gdz_div?gdz_spr=eng&gdz_akt_zeile=5&gdz_anz_zeile=1&gdz_unt_zeile=20&gdz_user_id=0">German Federal Agency for 
+Cartography and Geodesy</a>. The entries are contextualized by a type, for example "Landschaft" (landscape).
+                </p>
+            </div>
+            <div class="col-md-6">
+                <input style="width:400px" ng-model="example[1].input"
+                    opensearch-suggest="{{example[1].api}}"
+                    suggest-function="suggest2"
+                    typeahead="item.label for item in suggest2($viewValue) | filter:$viewValue"
+                    typeahead-template-url="sampleTemplate2.html" 
+                    typeahead-loading="loadingLocations2"
+                    class="form-control"
+                    typeahead-on-select="example[1].onSelect($item)"
+                />
+                <i ng-show="loadingLocations2" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
+                <div style="margin-top:10px" ng-if="example[1].item.description.length">
+                    <b>Description:</b> {{example[1].item.description}}
+                </div>
+                <div ng-if="example[1].item.url.length" style="margin-top:10px">
+                    <b>URL:</b> <a href="{{example[1].item.url}}?format=xml">{{example[1].item.url}}</a>
+                </div>
+            </div>
         </div>
-        <script type="text/ng-template" id="sampleTemplate2.html">
-					<div class="suggest-item">
-						<div class="suggest-item-label">
-							<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-						</div>
-						<div class="suggest-item-description">
-							{{match.model.description}}
-						</div>
-					</div>
-				</script>
-        <div class="col-md-6">
-            <p>
-            Der GN250-Suggest bezieht sich auf geographische Daten des Bundesamtes für Kartographie und Geodäsie (<a href="http://www.geodatenzentrum.de/geodaten/gdz_rahmen.gdz_div?gdz_spr=deu&gdz_akt_zeile=5&gdz_anz_zeile=1&gdz_unt_zeile=20&gdz_user_id=0">BKG-Homepage</a>). Die Einträge sind mit einer Typbezeichnung versehen, etwa "Landschaft".
-            </p>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>gnd</h3>
+            </div>
+            <script type="text/ng-template" id="sampleTemplate3.html">
+                <div class="suggest-item">
+                    <div class="suggest-item-label">
+                        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+                    </div>
+                </div>
+            </script>
+            <div class="col-md-6">
+                <p>
+                    The GND is the integrated authority file of the german <a href="http://portal.dnb.de">Nationalbibliothek</a>. It provides standardized data records concerning persons, corporate bodies, congresses, geographic entities, topics and works.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <input style="width:400px" ng-model="example[2].input" 
+                opensearch-suggest="{{example[2].api}}"
+                suggest-function="suggest3"
+                typeahead="item.label for item in suggest3($viewValue) | filter:$viewValue"
+                typeahead-template-url="sampleTemplate3.html" 
+                typeahead-loading="loadingLocations3"
+                class="form-control" 
+                typeahead-on-select="example[2].onSelect($item)"
+                />
+                <i ng-show="loadingLocations3" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
+                <div ng-if="example[2].item.url.length" style="margin-top:10px">
+                    <b>URL:</b> <a href="{{example[2].item.url}}">{{example[2].item.url}}</a>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <input ng-model="example[1].input" 
-               opensearch-suggest="{{example[1].api}}"
-               suggest-function="suggest2"
-               typeahead="item.label for item in suggest2($viewValue) | filter:$viewValue"
-               typeahead-template-url="sampleTemplate2.html" 
-               typeahead-loading="loadingLocations2"
-               class="form-control"
-							 typeahead-on-select="example[1].onSelect($item)"/>
-            <i ng-show="loadingLocations2" class="glyphicon glyphicon-refresh"></i>
-					<div style="margin-top:10px" ng-if="example[1].item.description.length">
-						<b>Description:</b> {{example[1].item.description}}
-					</div>
-            <div ng-if="example[1].item.url.length" style="margin-top:10px">
-							<b>URL:</b> <a href="{{example[1].item.url}}?format=xml">{{example[1].item.url}}</a>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Wikipedia</h3>
+            </div>
+            <script type="text/ng-template" id="sampleTemplate4.html">
+                <div class="suggest-item">
+                    <div class="suggest-item-label">
+                        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+                    </div>
+                </div>
+            </script>
+            <div class="col-md-6">
+                <p>
+                    <a href="http://en.wikipedia.org">Wikipedia</a> provides an OpenSearch Suggest API as well.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <input style="width:400px" ng-model="example[3].input" 
+                    opensearch-suggest="{{example[3].api}}"
+                    suggest-function="suggest4"
+                    typeahead="item.label for item in suggest4($viewValue) | filter:$viewValue"
+                    typeahead-template-url="sampleTemplate4.html" 
+                    typeahead-loading="loadingLocations4"
+                    class="form-control"
+                    typeahead-on-select="example[3].onSelect($item)"
+                />
+                <i ng-show="loadingLocations5" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h3>gnd</h3>
+    <div class="footer">
+        <div>
+            ng-suggest is based on 
+            <a href="http://angular-ui.github.io/bootstrap/#/typeahead">ui.bootstrap.typeahead</a>.
         </div>
-        <script type="text/ng-template" id="sampleTemplate3.html">
-					<div class="suggest-item">
-						<div class="suggest-item-label">
-							<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-						</div>
-					</div>
-        </script>
-        <div class="col-md-6">
-            <p>
-                Der GND-Suggest verweist auf die Einträge der Normdateien der Deutschen Nationalbibliothek (<a href="http://portal.dnb.de">Portal der DNB</a>).
-            </p>
-        </div>
-        <div class="col-md-6">
-            <input ng-model="example[2].input" 
-               opensearch-suggest="{{example[2].api}}"
-               suggest-function="suggest3"
-               typeahead="item.label for item in suggest3($viewValue) | filter:$viewValue"
-               typeahead-template-url="sampleTemplate3.html" 
-               typeahead-loading="loadingLocations3"
-               class="form-control" 
-               typeahead-on-select="example[2].onSelect($item)"/>
-            <i ng-show="loadingLocations3" class="glyphicon glyphicon-refresh"></i>
-            <div ng-if="example[2].item.url.length" style="margin-top:10px">
-            <b>URL:</b> <a href="{{example[2].item.url}}">{{example[2].item.url}}</a>
-            </div>
-        </div>
-		</div>
-		<div class="row">
-      <div class="col-md-12">
-        <h3>Wikipedia</h3>
-      </div>
-        <script type="text/ng-template" id="sampleTemplate4.html">
-				<div class="suggest-item">
-					<div class="suggest-item-label">
-					<span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-					</div>
-        </div>
-        </script>
-        <div class="col-md-6">
-            <p>
-            <a href="http://de.wikipedia.org">Wikipedia</a> bietet einen OpenSearch Suggest-Dienst an, der hiermit angesteuert werden kann.
-            </p>
-        </div>
-        <div class="col-md-6">
-            <input ng-model="example[3].input" 
-                   opensearch-suggest="{{example[3].api}}"
-                   suggest-function="suggest4"
-                   typeahead="item.label for item in suggest4($viewValue) | filter:$viewValue"
-                   typeahead-template-url="sampleTemplate4.html" 
-                   typeahead-loading="loadingLocations4"
-                   class="form-control" 
-									 typeahead-on-select="example[3].onSelect($item)"/>
-            <i ng-show="loadingLocations5" class="glyphicon glyphicon-refresh"></i>
-        </div>
-        <div class="col-md-12">
-					<div style="float:right">
-              ng-suggest is based on 
-              <a href="http://angular-ui.github.io/bootstrap/#/typeahead">ui.bootstrap.typeahead</a>.
-					</div>
-        </div>
-		</div>
+    </div>
 </body>
 </html>

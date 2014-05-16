@@ -2,22 +2,34 @@
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 .suggest-item{
-	border-bottom:1px solid #ccc;
-	padding:5px;
+    border-bottom:1px solid #ccc;
+    padding:5px;
 }
 .suggest-item:hover{
-	background-color:#428bca;
-	color:white;
-	cursor:pointer;
+    background-color:#428bca;
+    color:white;
+    cursor:pointer;
 }
 .suggest-item-label{
-	border-bottom:none;
-	padding:0px;
-	margin:0px;
+    border-bottom:none;
+    padding:0px;
+    margin:0px;
 }
 .suggest-item-description{
-	border-bottom:none;
-	padding:0px;
-	font-style:italic;
-	margin:0px;
+    border-bottom:none;
+    padding:0px;
+    font-style:italic;
+    margin:0px;
+}
+.footer{
+    margin-top:40px;
+    bottom:0px;
+    position:absolute;
+    padding-top:45px;
+    text-align:center;
+    clear:left;
+    background-color:#ddd;
+    height:100px;
+    width:100%;
+    border-top:1px solid #bbb;
 }
