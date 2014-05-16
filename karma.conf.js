@@ -1,8 +1,10 @@
 module.exports = function(config) {
     config.set({
         files: [
-            'test/lib/angular*.js',
+            'lib/angular.min.js',
+            'lib/angular-*.js',
             'src/*.js',
+            'src/**/*.js',
             'test/**/*.js',
         ],
         frameworks: ['jasmine'],
@@ -12,8 +14,5 @@ module.exports = function(config) {
             'karma-phantomjs-launcher',
             'karma-firefox-launcher'
         ],
-        // continuous integration mode
-        autoWatch: true,
-        singleRun: false,
     });
 };

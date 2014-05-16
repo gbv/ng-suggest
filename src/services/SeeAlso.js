@@ -8,7 +8,7 @@
  * service to query a [SeeAlso 
  * server](http://www.gbv.de/wikis/cls/SeeAlso_Simple_Specification) 
  * for link suggestions. A SeeAlso service is
- * instanciated with the server base URL as first argument:
+ * instanciated with the server's base URL as first argument:
  *
  * <pre class="prettyprint linenums">
  * var seealso = new SeeAlso("http://example.org/seealso");
