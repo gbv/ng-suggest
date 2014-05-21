@@ -49,6 +49,7 @@
                     typeahead-on-select="example[0].onSelect($item)"
                     ng-model="example[0].input" 
                     suggest-typeahead="{{example[0].api}}"
+                    placeholder="Search geonames.org"
                 />
                 <i ng-show="loadingLocations1" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div style="margin-top:10px" ng-if="example[0].item.description.length">
@@ -85,6 +86,7 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
                     typeahead-on-select="example[1].onSelect($item)"
                     ng-model="example[1].input" 
                     suggest-typeahead="{{example[1].api}}"
+                    placeholder="Search gn250"
                 />
                 <i ng-show="loadingLocations2" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div style="margin-top:10px" ng-if="example[1].item.description.length">
@@ -118,6 +120,7 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
                     typeahead-on-select="example[2].onSelect($item)"
                     ng-model="example[2].input" 
                     suggest-typeahead="{{example[2].api}}"
+                    placeholder="Search gnd"
                 />
                 <i ng-show="loadingLocations3" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div ng-if="example[2].item.url.length" style="margin-top:10px">
@@ -148,6 +151,7 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
                     typeahead-on-select="example[3].onSelect($item)"
                     ng-model="example[3].input" 
                     suggest-typeahead="{{example[3].api}}"
+                    placeholder="Search Wikipedia"
                 />
                 <i ng-show="loadingLocations5" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
             </div>
