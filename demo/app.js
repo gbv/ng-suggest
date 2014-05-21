@@ -17,10 +17,10 @@ function myController($scope, OpenSearchSuggestions) {
         },
         {
             url: "http://rvk.uni-regensburg.de/api/json/nodes/{searchTerms}",
-            transform: function(data) { 
-                var suggestions = { 
-                    query: data.request, 
-                    values: [ ] 
+            transform: function(data) {
+                var suggestions = {
+                    query: data.request,
+                    values: [ ]
                 };
                 for(var i=0; i<data.node.length; i++) {
                     suggestions.values.push( {
@@ -28,7 +28,7 @@ function myController($scope, OpenSearchSuggestions) {
                         description: data.node[i].notation,
                     } );
                 }
-                return suggestions;                
+                return suggestions;
             },
             jsonp: 'jsonp'
         }
