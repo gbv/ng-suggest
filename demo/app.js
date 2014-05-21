@@ -16,10 +16,19 @@ function myController($scope, OpenSearchSuggestions) {
             api: "https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&namespace=0&format=json&search=",
         },
         {
-            url: "http://rvk.uni-regensburg.de/api/json/register/{searchTerms}",
+            url: "http://rvk.uni-regensburg.de/api/json/nodes/{searchTerms}",
             transform: function(data) { 
-                console.log(data); // TODO
-                return data; 
+                var suggestions = { 
+                    query: data.request, 
+                    values: [ ] 
+                };
+                for(var i=0; i<data.node.length; i++) {
+                    suggestions.values.push( {
+                        label:       data.node[i].benennung, 
+                        description: data.node[i].notation,
+                    } );
+                }
+                return suggestions;                
             },
             jsonp: 'jsonp'
         }
