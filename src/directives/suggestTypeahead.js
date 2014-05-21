@@ -6,8 +6,8 @@
  * 
  * The directive enables
  * [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead)
- * search suggestions from an OpenSearch Suggestions server. All options of
- * typeahead directive (e.g. `typeahead-on-select`) can be used.
+ * search suggestions from an OpenSearch Suggestions server. Standard options of
+ * the typeahead directive (e.g. `typeahead-on-select`) can be used as well.
  *
  * # Source code
  * 
@@ -22,11 +22,13 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
         scope: {
             api: '@suggestTypeahead',
             jsonp: '@jsonp',
-            // TODO: add suggest-transform
         },
-        // based on http://stackoverflow.com/questions/15279244 and hours of work:
-        require: "ngModel",
+
+        // based on http://stackoverflow.com/questions/15279244 and more hours of work
+        require: 'ngModel',
         compile: function(element, attrs) {
+
+            var suggestFunction = "suggest_" + Math.random().toString(36).slice(2);
        
             // defines scope.service and scope.suggest
             function suggestLink(scope,element,attrs) {
@@ -40,12 +42,14 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
                 });
 
                 // create suggest function that queries the service
-                scope.suggest = function(value) {
+                scope.$parent[suggestFunction] = function(value) {
                     var s = scope.service.suggest(value);
                     return s.then(function(suggestions){ 
                         return suggestions.values; 
                     })
                 };
+
+                
             }
 
             // insert typeahead directive, if not explicitly given
@@ -55,7 +59,7 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
                     throw new Error("ui.bootstrap.typehead directive required!");
                 }
 
-                var expr = "item.label for item in suggest($viewValue) | filter:$viewValue";
+                var expr = "item.label for item in "+suggestFunction+"($viewValue) | filter:$viewValue";
                 attrs.$set('typeahead',expr);
                 
                 var directive = $injector.get("typeaheadDirective")[0];
@@ -63,16 +67,18 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
             }
 
             // call both link functions
-            return function(scope, element, attrs, controller) {
-                suggestLink(scope, element, attrs, controller);
-                typeaheadLink(scope, element, attrs, controller);
+            return function(scope, element, attrs, modelCtrl) {
+                suggestLink(scope, element, attrs);
+                // typeahead directive expects the original scope, that's
+                // why the suggest function needs to be defined at parent
+                typeaheadLink(scope.$parent, element, attrs, modelCtrl);
             };
         },
     };
 }]);
 
 // TODO: if api is URL => create oss
-// if api is service object ...
+// if api is service object ... use it (support transform by this)
 // if api is function
 //   <input ng-model="input1" 
 //          suggest-typeahead="http://..."

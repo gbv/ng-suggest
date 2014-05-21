@@ -44,15 +44,11 @@
                 </p>
             </div>
             <div class="col-md-6">
-                <input style="width:400px" ng-model="example[0].input" 
-                    opensearch-suggest="{{example[0].api}}"
-                    suggest-function="suggest1"
-                    typeahead="item.label for item in suggest1($viewValue) | filter:$viewValue"
-                    typeahead-on-select="example[0].onSelect($item)"
-                    typeahead-editable="false"
-                    typeahead-template-url="sampleTemplate1.html" 
+                <input style="width:400px" class="form-control"
                     typeahead-loading="loadingLocations1"
-                    class="form-control"
+                    typeahead-on-select="example[0].onSelect($item)"
+                    ng-model="example[0].input" 
+                    suggest-typeahead="{{example[0].api}}"
                 />
                 <i ng-show="loadingLocations1" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div style="margin-top:10px" ng-if="example[0].item.description.length">
@@ -84,14 +80,11 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
                 </p>
             </div>
             <div class="col-md-6">
-                <input style="width:400px" ng-model="example[1].input"
-                    opensearch-suggest="{{example[1].api}}"
-                    suggest-function="suggest2"
-                    typeahead="item.label for item in suggest2($viewValue) | filter:$viewValue"
-                    typeahead-template-url="sampleTemplate2.html" 
+                <input style="width:400px" class="form-control"
                     typeahead-loading="loadingLocations2"
-                    class="form-control"
                     typeahead-on-select="example[1].onSelect($item)"
+                    ng-model="example[1].input" 
+                    suggest-typeahead="{{example[1].api}}"
                 />
                 <i ng-show="loadingLocations2" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div style="margin-top:10px" ng-if="example[1].item.description.length">
@@ -102,6 +95,7 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-12">
                 <h3>gnd</h3>
@@ -119,14 +113,11 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
                 </p>
             </div>
             <div class="col-md-6">
-                <input style="width:400px" ng-model="example[2].input" 
-                opensearch-suggest="{{example[2].api}}"
-                suggest-function="suggest3"
-                typeahead="item.label for item in suggest3($viewValue) | filter:$viewValue"
-                typeahead-template-url="sampleTemplate3.html" 
-                typeahead-loading="loadingLocations3"
-                class="form-control" 
-                typeahead-on-select="example[2].onSelect($item)"
+                <input style="width:400px" class="form-control"
+                    typeahead-loading="loadingLocations3"
+                    typeahead-on-select="example[2].onSelect($item)"
+                    ng-model="example[2].input" 
+                    suggest-typeahead="{{example[2].api}}"
                 />
                 <i ng-show="loadingLocations3" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div ng-if="example[2].item.url.length" style="margin-top:10px">
@@ -134,6 +125,7 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-12">
                 <h3>Wikipedia</h3>
@@ -151,18 +143,16 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
                 </p>
             </div>
             <div class="col-md-6">
-                <input style="width:400px" ng-model="example[3].input" 
-                    opensearch-suggest="{{example[3].api}}"
-                    suggest-function="suggest4"
-                    typeahead="item.label for item in suggest4($viewValue) | filter:$viewValue"
-                    typeahead-template-url="sampleTemplate4.html" 
-                    typeahead-loading="loadingLocations4"
-                    class="form-control"
+                <input style="width:400px" class="form-control"
+                    typeahead-loading="loadingLocations3"
                     typeahead-on-select="example[3].onSelect($item)"
+                    ng-model="example[3].input" 
+                    suggest-typeahead="{{example[3].api}}"
                 />
                 <i ng-show="loadingLocations5" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
             </div>
         </div>
+
     </div>
     <div class="footer">
         <div>
