@@ -43,7 +43,7 @@
  * `function(s) { return s; }` to get the original, untransformed response.
  * Transformation errors are catched and passed as rejection of the promise.
  *
- * The optional paramater `jsonp` (true by default) defines whether requests are 
+ * The optional paramater `jsonp` (false by default) defines whether requests are 
  * done via JSONP.
  *
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
@@ -86,6 +86,7 @@
             $scope.suggestService = new OpenSearchSuggestions({
                 url: url, 
                 transform: $scope.site.transform,
+                jsonp: 1,
             });
             updateSearch($scope.search);
         };
@@ -155,8 +156,10 @@ angular.module('ngSuggest')
             this.url += '{searchTerms}';
         }
         this.transform = args.transform ? args.transform : transformSuggestions;
-        this.jsonp = (typeof args.jsonp === 'undefined' || args.jsonp === "") 
-                   ? true : !!args.jsonp;
+        this.jsonp = args.jsonp;
+        if (this.jsonp === true || this.jsonp.match(/^\d/)) {
+            this.jsonp = 'callback';
+        }
     };
 
     // method
@@ -165,15 +168,20 @@ angular.module('ngSuggest')
             if (!this.url) {
                 return $q.reject(null);
             }
-            var url = this.url.replace('{searchTerms}', decodeURIComponent(searchTerms));
+
+            var url = this.url;
+            var transform = this.transform;
+            var get = $http.get;
 
             if (this.jsonp) {
-               url += '&callback=JSON_CALLBACK';
+                get = $http.jsonp;
+                url += (url.indexOf('?') == -1 ? '?' : '&');
+                url += this.jsonp + '=JSON_CALLBACK';
             }
+            
+            url = url.replace('{searchTerms}', decodeURIComponent(searchTerms));
 
-            var transform = this.transform;
-
-            return $http.jsonp(url).then(
+            return get(url).then(
                 function(response) {
                     try {
                         return transform(response.data);

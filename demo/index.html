@@ -28,16 +28,6 @@
             <div class="col-md-12">
                 <h3>geonames</h3>
             </div>
-            <script type="text/ng-template" id="sampleTemplate1.html">
-                <div class="suggest-item">
-                    <div class="suggest-item-label">
-                        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-                    </div>
-                    <div class="suggest-item-description">
-                        {{match.model.description}}
-                    </div>
-                </div>
-            </script>
             <div class="col-md-6">
                 <p>
                     Geonames (<a href="http://geonames.org">geonames.org/</a>) provides a lot of data for geographic places. This includes coordinates and markings on a map, as well as other contextual information.
@@ -46,9 +36,10 @@
             <div class="col-md-6">
                 <input style="width:400px" class="form-control"
                     typeahead-loading="loadingLocations1"
+                    typeahead-template-url="itemTemplate.html"
                     typeahead-on-select="example[0].onSelect($item)"
                     ng-model="example[0].input" 
-                    suggest-typeahead="{{example[0].api}}"
+                    suggest-typeahead="example[0].api" jsonp=1
                 />
                 <i ng-show="loadingLocations1" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div style="margin-top:10px" ng-if="example[0].item.description.length">
@@ -63,16 +54,6 @@
             <div class="col-md-12">
                 <h3>gn250</h3>
             </div>
-            <script type="text/ng-template" id="sampleTemplate2.html">
-                <div class="suggest-item">
-                    <div class="suggest-item-label">
-                        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-                    </div>
-                    <div class="suggest-item-description">
-                        {{match.model.description}}
-                    </div>
-                </div>
-            </script>
             <div class="col-md-6">
                 <p>
                 GN250 contains data from the <a href="http://www.geodatenzentrum.de/geodaten/gdz_rahmen.gdz_div?gdz_spr=eng&gdz_akt_zeile=5&gdz_anz_zeile=1&gdz_unt_zeile=20&gdz_user_id=0">German Federal Agency for 
@@ -82,9 +63,10 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
             <div class="col-md-6">
                 <input style="width:400px" class="form-control"
                     typeahead-loading="loadingLocations2"
+                    typeahead-template-url="itemTemplate.html"
                     typeahead-on-select="example[1].onSelect($item)"
                     ng-model="example[1].input" 
-                    suggest-typeahead="{{example[1].api}}"
+                    suggest-typeahead="example[1].api" jsonp=1
                 />
                 <i ng-show="loadingLocations2" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div style="margin-top:10px" ng-if="example[1].item.description.length">
@@ -100,13 +82,6 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
             <div class="col-md-12">
                 <h3>gnd</h3>
             </div>
-            <script type="text/ng-template" id="sampleTemplate3.html">
-                <div class="suggest-item">
-                    <div class="suggest-item-label">
-                        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-                    </div>
-                </div>
-            </script>
             <div class="col-md-6">
                 <p>
                     The GND is the integrated authority file of the german <a href="http://portal.dnb.de">Nationalbibliothek</a>. It provides standardized data records concerning persons, corporate bodies, congresses, geographic entities, topics and works.
@@ -115,9 +90,10 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
             <div class="col-md-6">
                 <input style="width:400px" class="form-control"
                     typeahead-loading="loadingLocations3"
+                    typeahead-template-url="itemTemplate.html"
                     typeahead-on-select="example[2].onSelect($item)"
                     ng-model="example[2].input" 
-                    suggest-typeahead="{{example[2].api}}"
+                    suggest-typeahead="example[2].api" jsonp=1
                 />
                 <i ng-show="loadingLocations3" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
                 <div ng-if="example[2].item.url.length" style="margin-top:10px">
@@ -130,13 +106,6 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
             <div class="col-md-12">
                 <h3>Wikipedia</h3>
             </div>
-            <script type="text/ng-template" id="sampleTemplate4.html">
-                <div class="suggest-item">
-                    <div class="suggest-item-label">
-                        <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-                    </div>
-                </div>
-            </script>
             <div class="col-md-6">
                 <p>
                     <a href="http://en.wikipedia.org">Wikipedia</a> provides an OpenSearch Suggest API as well.
@@ -144,10 +113,31 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
             </div>
             <div class="col-md-6">
                 <input style="width:400px" class="form-control"
-                    typeahead-loading="loadingLocations3"
+                    typeahead-loading="loadingLocations4"
+                    typeahead-template-url="itemTemplate.html"
                     typeahead-on-select="example[3].onSelect($item)"
                     ng-model="example[3].input" 
-                    suggest-typeahead="{{example[3].api}}"
+                    suggest-typeahead="example[3].api" jsonp=1
+                />
+                <i ng-show="loadingLocations4" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3>RVK</h3>
+            </div>
+            <div class="col-md-6">
+                <p>
+                    <a href="http://en.wikipedia.org">Wikipedia</a> provides an OpenSearch Suggest API as well.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <input style="width:400px" class="form-control"
+                    typeahead-loading="loadingLocations5"
+                    typeahead-on-select="example[4].onSelect($item)"
+                    ng-model="example[4].input" 
+                    suggest-typeahead="example[4].service"
                 />
                 <i ng-show="loadingLocations5" style="position:absolute; margin-top:10px; right:25px;" class="glyphicon glyphicon-refresh"></i>
             </div>
@@ -157,8 +147,20 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
     <div class="footer">
         <div>
             ng-suggest is based on 
-            <a href="http://angular-ui.github.io/bootstrap/#/typeahead">ui.bootstrap.typeahead</a>.
+            <a href="http://angular-ui.github.io/bootstrap/">ui.bootstrap.typeahead</a>.
         </div>
     </div>
+
+    <script type="text/ng-template" id="itemTemplate.html">
+        <div class="suggest-item">
+            <div class="suggest-item-label">
+                <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+            </div>
+            <div class="suggest-item-description" ng-if="match.model.description">
+                {{match.model.description}}
+            </div>
+        </div>
+    </script>
+
 </body>
 </html>

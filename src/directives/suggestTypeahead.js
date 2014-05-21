@@ -11,8 +11,14 @@
  *
  * # Source code
  * 
- * The most recent [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/suggestTypeahead.js) of this directive is available at GitHub.
+ * The most recent
+ * [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/suggestTypeahead.js)
+ * of this directive is available at GitHub.
  * 
+ * @param suggest-typeahead Angular expression with URL as string or 
+ *      {@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions}
+ *      object
+ * @param json enable JSONP (if service given as URL)
  */
 angular.module('ngSuggest').directive('suggestTypeahead',[
     'OpenSearchSuggestions','$injector',
@@ -20,7 +26,7 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
     return {
         restrict: 'A',
         scope: {
-            api: '@suggestTypeahead',
+            api: '=suggestTypeahead',
             jsonp: '@jsonp',
         },
 
@@ -34,11 +40,15 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
             function suggestLink(scope,element,attrs) {
 
                 // create an OpenSearchSuggestions service instance
-                scope.$watch('api',function(url) {
-                    scope.service = new OpenSearchSuggestions({
-                        url: scope.api,
-                        jsonp: scope.jsonp,
-                    });
+                scope.$watch('api',function(service) {
+                    if (angular.isObject(service)) {
+                        scope.service = service;
+                    } else {
+                        scope.service = new OpenSearchSuggestions({
+                            url: service,
+                            jsonp: scope.jsonp,
+                        });
+                    }
                 });
 
                 // create suggest function that queries the service
@@ -48,7 +58,6 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
                         return suggestions.values; 
                     })
                 };
-
                 
             }
 
