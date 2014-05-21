@@ -15,10 +15,10 @@
  * [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/suggestTypeahead.js)
  * of this directive is available at GitHub.
  * 
- * @param suggest-typeahead Angular expression with URL as string or 
+ * @param {string} suggest-typeahead Angular expression with URL as string or 
  *      {@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions}
  *      object
- * @param json enable JSONP (if service given as URL)
+ * @param {string} json enable JSONP (if service given as URL)
  */
 angular.module('ngSuggest').directive('suggestTypeahead',[
     'OpenSearchSuggestions','$injector',
