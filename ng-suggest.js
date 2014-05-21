@@ -119,8 +119,14 @@ angular.module('ngSuggest').directive('seealsoServer', [
  *
  * # Source code
  * 
- * The most recent [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/suggestTypeahead.js) of this directive is available at GitHub.
+ * The most recent
+ * [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/suggestTypeahead.js)
+ * of this directive is available at GitHub.
  * 
+ * @param suggest-typeahead Angular expression with URL as string or 
+ *      {@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions}
+ *      object
+ * @param json enable JSONP (if service given as URL)
  */
 angular.module('ngSuggest').directive('suggestTypeahead', [
   'OpenSearchSuggestions',
@@ -129,7 +135,7 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
     return {
       restrict: 'A',
       scope: {
-        api: '@suggestTypeahead',
+        api: '=suggestTypeahead',
         jsonp: '@jsonp'
       },
       require: 'ngModel',
@@ -138,11 +144,15 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
         // defines scope.service and scope.suggest
         function suggestLink(scope, element, attrs) {
           // create an OpenSearchSuggestions service instance
-          scope.$watch('api', function (url) {
-            scope.service = new OpenSearchSuggestions({
-              url: scope.api,
-              jsonp: scope.jsonp
-            });
+          scope.$watch('api', function (service) {
+            if (angular.isObject(service)) {
+              scope.service = service;
+            } else {
+              scope.service = new OpenSearchSuggestions({
+                url: service,
+                jsonp: scope.jsonp
+              });
+            }
           });
           // create suggest function that queries the service
           scope.$parent[suggestFunction] = function (value) {
@@ -226,7 +236,7 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
  * `function(s) { return s; }` to get the original, untransformed response.
  * Transformation errors are catched and passed as rejection of the promise.
  *
- * The optional paramater `jsonp` (true by default) defines whether requests are 
+ * The optional paramater `jsonp` (false by default) defines whether requests are 
  * done via JSONP.
  *
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
@@ -269,6 +279,7 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
             $scope.suggestService = new OpenSearchSuggestions({
                 url: url, 
                 transform: $scope.site.transform,
+                jsonp: 1,
             });
             updateSearch($scope.search);
         };
@@ -340,7 +351,10 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
         this.url += '{searchTerms}';
       }
       this.transform = args.transform ? args.transform : transformSuggestions;
-      this.jsonp = typeof args.jsonp === 'undefined' || args.jsonp === '' ? true : !!args.jsonp;
+      this.jsonp = args.jsonp;
+      if (this.jsonp === true || this.jsonp.match(/^\d/)) {
+        this.jsonp = 'callback';
+      }
     };
     // method
     OpenSearchSuggestions.prototype = {
@@ -348,12 +362,16 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
         if (!this.url) {
           return $q.reject(null);
         }
-        var url = this.url.replace('{searchTerms}', decodeURIComponent(searchTerms));
-        if (this.jsonp) {
-          url += '&callback=JSON_CALLBACK';
-        }
+        var url = this.url;
         var transform = this.transform;
-        return $http.jsonp(url).then(function (response) {
+        var get = $http.get;
+        if (this.jsonp) {
+          get = $http.jsonp;
+          url += url.indexOf('?') == -1 ? '?' : '&';
+          url += this.jsonp + '=JSON_CALLBACK';
+        }
+        url = url.replace('{searchTerms}', decodeURIComponent(searchTerms));
+        return get(url).then(function (response) {
           try {
             return transform(response.data);
           } catch (e) {
@@ -411,7 +429,9 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
  * 
  * # Source code
  *
- * The most recent [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/SeeAlso.js) of this service is available at GitHub.
+ * The most recent 
+ * [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/SeeAlso.js)
+ * of this service is available at GitHub.
  */
 angular.module('ngSuggest').factory('SeeAlso', [
   'OpenSearchSuggestions',
