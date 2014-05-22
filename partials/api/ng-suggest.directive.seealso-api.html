@@ -1,0 +1,40 @@
+<h1><code ng:non-bindable="">seealso-api</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">ng-suggest</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="ng-suggest-directive-page ng-suggest-directive-seealso-api-page"><p>This directive displaysy link suggestions queried via SeeAlso link
+server protocol.</p>
+<p>The directive has not been implemented yet!</p>
+<pre class="prettyprint linenums" class="prettyprint linenums">
+&lt;!-- comma-separated --&gt;
+&lt;span seealso-api="http://example.org/" seealso-id="123"/&gt;
+&lt;!-- list --&gt;
+&lt;ul seealso-api="http://example.org/" seealso-id="123"/&gt;
+&lt;ol seealso-api="http://example.org/" seealso-id="123"/&gt;
+&lt;!-- image --&gt;
+&lt;img seealso-api="http://example.org/" seealso-id="123"/&gt;
+&lt;!-- custom template --&gt;
+&lt;div seealso-api="http://example.org/" seealso-id="123"&gt;
+...
+&lt;/div&gt;
+&lt;!-- custom template, referenced --&gt;
+&lt;div seealso-api="http://example.org/" seealso-id="123" template-url="..." /&gt;
+</pre>
+<h4 id="description_source-code">Source code</h4>
+<p>The most recent 
+<a href="https://github.com/gbv/ng-suggest/blob/master/src/directives/seealsoApi.js">source code</a>
+of this service is available at GitHub.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage">as attribute<pre class="prettyprint linenums">&lt;ANY seealso-api="{string}"
+     seealso-id="{string}"
+     template-url="{string}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>seealso-api</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="ng-suggest-directive-page ng-suggest-directive-seealso-api-page"><p>Base URL of SeeAlso server to query from</p>
+</div></td></tr><tr><td>seealso-id</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="ng-suggest-directive-page ng-suggest-directive-seealso-api-page"><p>Identifier to query for</p>
+</div></td></tr><tr><td>template-url</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="ng-suggest-directive-page ng-suggest-directive-seealso-api-page"><p>Custom template to display result with</p>
+</div></td></tr></tbody></table></div>
+</div>

@@ -1,32 +1,17 @@
 // as documented at http://angular-ui.github.io/bootstrap/#/getting_started
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
-.item{
-	border-bottom:1px solid #ccc;
-	padding:5px;
+.loading-icon {
+    position:absolute; 
+    margin-top:10px; 
+    right:25px;
 }
-.item:hover{
-	background-color:#428bca;
-	color:white;
-	cursor:pointer;
-}
-.item-label{
-	border-bottom:none;
-	padding:0px;
-	margin:0px;
-}
-.item-description{
-	border-bottom:none;
-	padding:0px;
-	font-style:italic;
-	margin:0px;
-}
-.item-url{
-	border-bottom:none;
-	padding:0px;
-	margin:0px;
-	text-decoration:underline;
-}
-.res-link{
-	margin-top:10px;
+
+.footer{
+    margin-top:200px;
+    padding-top:45px;
+    text-align:center;
+    clear:left;
+    height:100px;
+    width:100%;
 }
