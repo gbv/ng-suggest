@@ -19,89 +19,71 @@
  * * service
  *   {@link ng-suggest.service:SeeAlso SeeAlso}
  *   to query an SeeAlso server link suggestions
- * * directive
- *   {@link ng-suggest.directive:opensearch-suggest opensearch-suggest} (DEPRECATED)
  * * directive 
- *   {@link ng-suggest.directive:seealso-server seealso-server} (TODO)
+ *   {@link ng-suggest.directive:suggest-typeahead suggest-typeahead} 
+ *   to enable autosuggest via OpenSearch Suggest with ui.bootstrap.typeahead
  * * directive 
- *   {@link ng-suggest.directive:suggest-typeahead suggest-typeahead} (TODO)
+ *   {@link ng-suggest.directive:seealso-api seealso-api}
+ *   to display link suggestions queried via SeeAlso
  */
-angular.module('ngSuggest', []).value('version', '0.0.1-pre');
+angular.module('ngSuggest').value('version', '0.0.1-pre');
 /**
  * @ngdoc directive
- * @name ng-suggest.directive:opensearch-suggest
+ * @name ng-suggest.directive:seealso-api
  * @restrict A
  * @description
  * 
- * This directive can be used to provide a typeahead input field.
- * The demo application contains some usage example. To further
- * facilitate the use of suggest, this directive will likely be
- * replaced by 
- * {@name ng-suggest.directive:suggest-typeahead suggest-typeahead}!
+ * This directive displaysy link suggestions queried via SeeAlso link
+ * server protocol.
  *
- * # Source code
- * 
- * The most recent [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/opensearchSuggest.js) of this directive is available on GitHub.
- * 
- * The directive requires [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead).
- */
-angular.module('ngSuggest').directive('opensearchSuggest', [
-  'OpenSearchSuggestions',
-  function (OpenSearchSuggestions) {
-    return {
-      restrict: 'A',
-      scope: {
-        api: '@opensearchSuggest',
-        suggest: '=suggestFunction',
-        jsonp: '@jsonp'
-      },
-      link: function (scope, element, attrs) {
-        scope.$watch('api', function (url) {
-          scope.suggestions = new OpenSearchSuggestions({
-            url: scope.api,
-            jsonp: scope.jsonp
-          });
-        });
-        scope.suggest = function (value) {
-          var s = scope.suggestions.suggest(value);
-          return s.then(function (suggestions) {
-            return suggestions.values;
-          });
-        };
-      }
-    };
-  }
-]);
-/**
- * @ngdoc directive
- * @name ng-suggest.directive:seealso-server
- * @restrict A
- * @description
- * 
- * This directive has not been implemented yet!
+ * The directive has not been implemented yet!
  *
  * <pre class="prettyprint linenums">
  * <!-- comma-separated -->
- * <span seelalso-server="http://example.org/" seealso-id="123"/>
+ * <span seealso-api="http://example.org/" seealso-id="123"/>
  * <!-- list -->
- * <ul seelalso-server="http://example.org/" seealso-id="123"/>
- * <ol seelalso-server="http://example.org/" seealso-id="123"/>
+ * <ul seealso-api="http://example.org/" seealso-id="123"/>
+ * <ol seealso-api="http://example.org/" seealso-id="123"/>
  * <!-- image -->
- * <img seelalso-server="http://example.org/" seealso-id="123"/>
+ * <img seealso-api="http://example.org/" seealso-id="123"/>
  * <!-- custom template -->
- * <div seelalso-server="http://example.org/" seealso-id="123">
+ * <div seealso-api="http://example.org/" seealso-id="123">
  * ...
  * </div>
  * <!-- custom template, referenced -->
- * <div seelalso-server="http://example.org/" seealso-id="123" template-url="..." />
+ * <div seealso-api="http://example.org/" seealso-id="123" template-url="..." />
  * </pre>
+ *
+ * ## Source code
+ *
+ * The most recent 
+ * [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/seealsoApi.js)
+ * of this service is available at GitHub.
+ *
+ * @param {string} seealso-api Base URL of SeeAlso server to query from
+ * @param {string} seealso-id Identifier to query for
+ * @param {string} template-url Custom template to display result with
  */
-angular.module('ngSuggest').directive('seealsoServer', [
+angular.module('ngSuggest').directive('seealsoApi', [
   'SeeAlso',
   function (SeeAlso) {
     return {
       restrict: 'A',
-      link: function (scope, element, attrs) {
+      scope: {
+        api: '@seealsoApi',
+        id: '@seealsoId'
+      },
+      link: function (scope, element, attr) {
+        function request() {
+        }
+        ;
+        // TODO: don't call twice
+        scope.$watch('api', function () {
+          request();
+        });
+        scope.$watch('id', function () {
+          request();
+        });
       }
     };
   }
@@ -112,10 +94,11 @@ angular.module('ngSuggest').directive('seealsoServer', [
  * @restrict A
  * @description
  * 
- * The directive enables
- * [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead)
- * search suggestions from an OpenSearch Suggestions server. Standard options of
- * the typeahead directive (e.g. `typeahead-on-select`) can be used as well.
+ * This directive enables
+ * [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#typeahead)
+ * search suggestions (aka autosuggest) from an OpenSearch Suggestions server.
+ * Standard options of the typeahead directive (e.g. `typeahead-on-select` and
+ * `typeahead-template-url`) can be used as well.
  *
  * # Source code
  * 
@@ -127,6 +110,20 @@ angular.module('ngSuggest').directive('seealsoServer', [
  *      {@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions}
  *      object
  * @param {string} json enable JSONP (if service given as URL)
+ *
+ * @example
+ * <example module="myApp">
+ *  <file name="index.html">
+ *    <div ng-controller="myController">
+ *      <div>
+ *        <input suggest-typeahead="//wikipedia.org/w/api.php?action=opensearch&namespace=0&search=" />
+ *      </div>
+ *    </div>
+ *  </file>
+ *  <file name="script.js">
+ *    angular.module('myApp',['ngSuggest']);
+ *  </file>
+ * </example>
  */
 angular.module('ngSuggest').directive('suggestTypeahead', [
   'OpenSearchSuggestions',
@@ -196,10 +193,6 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
  * @name ng-suggest.service:OpenSearchSuggestions
  * @description
  * 
- * # Source code
- * 
- * The most recent [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/OpenSearchSuggestions.js) of this service is available at GitHub.
- * 
  * The <b>OpenSearchSuggestions</b> service can be used to query an OpenSearch 
  * server for search suggestions. The service is instanciated with an URL
  * template that includes the character sequence `{searchTerms}`:
@@ -242,6 +235,12 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
  * this service.
  *
+ * ## Source code
+ * 
+ * The most recent 
+ * [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/OpenSearchSuggestions.js)
+ * of this service is available at GitHub.
+ * 
  * @example
  <example module="myApp">
   <file name="index.html">
@@ -402,6 +401,12 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
  * seealso.suggest(search).then( function(links) { ... });
  * </pre>
  *
+ * ## Source code
+ *
+ * The most recent 
+ * [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/SeeAlso.js)
+ * of this service is available at GitHub.
+ *
  * @example
  <example module="myApp">
   <file name="index.html">
@@ -427,11 +432,6 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
   </file>
 </example>
  * 
- * # Source code
- *
- * The most recent 
- * [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/SeeAlso.js)
- * of this service is available at GitHub.
  */
 angular.module('ngSuggest').factory('SeeAlso', [
   'OpenSearchSuggestions',

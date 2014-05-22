@@ -15,6 +15,12 @@
  * seealso.suggest(search).then( function(links) { ... });
  * </pre>
  *
+ * ## Source code
+ *
+ * The most recent 
+ * [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/SeeAlso.js)
+ * of this service is available at GitHub.
+ *
  * @example
  <example module="myApp">
   <file name="index.html">
@@ -40,11 +46,6 @@
   </file>
 </example>
  * 
- * # Source code
- *
- * The most recent 
- * [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/SeeAlso.js)
- * of this service is available at GitHub.
  */
 angular.module('ngSuggest')
 .factory('SeeAlso', function(OpenSearchSuggestions) {

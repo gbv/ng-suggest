@@ -1,6 +1,17 @@
 // as documented at http://angular-ui.github.io/bootstrap/#/getting_started
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
+.footer{
+    margin-top:200px;
+    padding-top:45px;
+    text-align:center;
+    clear:left;
+    height:100px;
+    width:100%;
+}
+
+// typeahead-suggest styles (needed or included in bootstrap-css?!)
+
 .suggest-item{
     border-bottom:1px solid #ccc;
     padding:5px;
@@ -21,11 +32,5 @@
     font-style:italic;
     margin:0px;
 }
-.footer{
-    margin-top:200px;
-    padding-top:45px;
-    text-align:center;
-    clear:left;
-    height:100px;
-    width:100%;
-}
+
+

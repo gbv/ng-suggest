@@ -3,10 +3,6 @@
  * @name ng-suggest.service:OpenSearchSuggestions
  * @description
  * 
- * # Source code
- * 
- * The most recent [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/OpenSearchSuggestions.js) of this service is available at GitHub.
- * 
  * The <b>OpenSearchSuggestions</b> service can be used to query an OpenSearch 
  * server for search suggestions. The service is instanciated with an URL
  * template that includes the character sequence `{searchTerms}`:
@@ -49,6 +45,12 @@
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
  * this service.
  *
+ * ## Source code
+ * 
+ * The most recent 
+ * [source code](https://github.com/gbv/ng-suggest/blob/master/src/services/OpenSearchSuggestions.js)
+ * of this service is available at GitHub.
+ * 
  * @example
  <example module="myApp">
   <file name="index.html">

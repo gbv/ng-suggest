@@ -4,10 +4,11 @@
  * @restrict A
  * @description
  * 
- * The directive enables
- * [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#/typeahead)
- * search suggestions from an OpenSearch Suggestions server. Standard options of
- * the typeahead directive (e.g. `typeahead-on-select`) can be used as well.
+ * This directive enables
+ * [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#typeahead)
+ * search suggestions (aka autosuggest) from an OpenSearch Suggestions server.
+ * Standard options of the typeahead directive (e.g. `typeahead-on-select` and
+ * `typeahead-template-url`) can be used as well.
  *
  * # Source code
  * 
@@ -19,6 +20,20 @@
  *      {@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions}
  *      object
  * @param {string} json enable JSONP (if service given as URL)
+ *
+ * @example
+ * <example module="myApp">
+ *  <file name="index.html">
+ *    <div ng-controller="myController">
+ *      <div>
+ *        <input suggest-typeahead="//wikipedia.org/w/api.php?action=opensearch&namespace=0&search=" />
+ *      </div>
+ *    </div>
+ *  </file>
+ *  <file name="script.js">
+ *    angular.module('myApp',['ngSuggest']);
+ *  </file>
+ * </example>
  */
 angular.module('ngSuggest').directive('suggestTypeahead',[
     'OpenSearchSuggestions','$injector',

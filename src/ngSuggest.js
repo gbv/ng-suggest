@@ -19,12 +19,12 @@
  * * service
  *   {@link ng-suggest.service:SeeAlso SeeAlso}
  *   to query an SeeAlso server link suggestions
- * * directive
- *   {@link ng-suggest.directive:opensearch-suggest opensearch-suggest} (DEPRECATED)
  * * directive 
- *   {@link ng-suggest.directive:seealso-server seealso-server} (TODO)
+ *   {@link ng-suggest.directive:suggest-typeahead suggest-typeahead} 
+ *   to enable autosuggest via OpenSearch Suggest with ui.bootstrap.typeahead
  * * directive 
- *   {@link ng-suggest.directive:suggest-typeahead suggest-typeahead} (TODO)
+ *   {@link ng-suggest.directive:seealso-api seealso-api}
+ *   to display link suggestions queried via SeeAlso
  */
-angular.module('ngSuggest',[]) //,['ui.bootstrap']) // TODO: requires ui.bootstrap?
+angular.module('ngSuggest')
 .value('version', '0.0.1-pre');

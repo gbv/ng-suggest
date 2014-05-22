@@ -3,7 +3,7 @@
   "version": "0.0.1-pre",
   "author": "Jakob Voß <voss@gbv.de>",
   "contributor": ["Moritz Horn <moritz.horn@gmail.com>"], 
-  "description": "AngularJS module to provide Typeahead via OpenSearch Suggestions",
+  "description": "AngularJS module to use OpenSearch Suggestions and SeeAlso",
   "license": "AGPL",
   "repository": {
     "type": "git",
