@@ -127,7 +127,7 @@ module.exports = function(grunt) {
                 ].join('&&')
             },
             site: {
-                command: "rm -rf site && mkdir site && cp -r docs/* site"
+                command: "rm -rf site && mkdir site && cp -r docs/* site && find site -type l | xargs rm"
             },
             working_copy_must_be_clean: {
                 command: "if git status --porcelain 2>/dev/null | grep -q .; then exit 1; fi",
