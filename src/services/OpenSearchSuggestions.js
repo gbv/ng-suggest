@@ -158,10 +158,12 @@ angular.module('ngSuggest')
             this.url += '{searchTerms}';
         }
         this.transform = args.transform ? args.transform : transformSuggestions;
-        this.jsonp = args.jsonp;
-        if (this.jsonp === true || this.jsonp.match(/^\d/)) {
-            this.jsonp = 'callback';
+
+        var jsonp = args.jsonp;
+        if (jsonp && (jsonp === true || angular.isNumber(jsonp) || jsonp.match(/^\d/))) {
+            jsonp = 'callback';
         }
+        this.jsonp = jsonp;
     };
 
     // method
@@ -186,7 +188,7 @@ angular.module('ngSuggest')
             return get(url).then(
                 function(response) {
                     try {
-                        return transform(response.data);
+                        return transform(response.data, searchTerms);
                     } catch(e) {
                         return $q.reject(e);
                     }

@@ -17,24 +17,33 @@ function myController($scope, OpenSearchSuggestions) {
         },
         {
             url: "http://rvk.uni-regensburg.de/api/json/nodes/{searchTerms}",
-            transform: function(data) {
-                var suggestions = {
-                    query: data.request,
-                    values: [ ]
+            transform: function(r,q) {
+                return {
+                    query: q,
+                    values: r.node.map(function(v) {
+                        return {
+                            label: v.benennung,
+                            description: v.notation
+                        }
+                    })
                 };
-                for(var i=0; i<data.node.length; i++) {
-                    suggestions.values.push( {
-                        label:       data.node[i].benennung, 
-                        description: data.node[i].notation,
-                    } );
-                }
-                return suggestions;
             },
             jsonp: 'jsonp'
+        },
+        {
+            url: "http://api.lobid.org/person?format=short&name=",
+            transform: function(r,q) {
+                return {
+                    query: q,
+                    values: r.map(function(v) { return { label: v } }),
+                };
+            },
+            jsonp: 1
         }
     ];
 
     $scope.example[4].service = new OpenSearchSuggestions($scope.example[4]);
+    $scope.example[5].service = new OpenSearchSuggestions($scope.example[5]);
 
     for(var i=0; i<4; i++) {
         $scope.example[i].input = "";

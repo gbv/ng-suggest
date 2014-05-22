@@ -1,6 +1,12 @@
 // as documented at http://angular-ui.github.io/bootstrap/#/getting_started
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
+.loading-icon {
+    position:absolute; 
+    margin-top:10px; 
+    right:25px;
+}
+
 .footer{
     margin-top:200px;
     padding-top:45px;
@@ -9,28 +15,3 @@
     height:100px;
     width:100%;
 }
-
-// typeahead-suggest styles (needed or included in bootstrap-css?!)
-
-.suggest-item{
-    border-bottom:1px solid #ccc;
-    padding:5px;
-}
-.suggest-item:hover{
-    background-color:#428bca;
-    color:white;
-    cursor:pointer;
-}
-.suggest-item-label{
-    border-bottom:none;
-    padding:0px;
-    margin:0px;
-}
-.suggest-item-description{
-    border-bottom:none;
-    padding:0px;
-    font-style:italic;
-    margin:0px;
-}
-
-

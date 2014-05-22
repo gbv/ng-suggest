@@ -26,7 +26,7 @@
  *   {@link ng-suggest.directive:seealso-api seealso-api}
  *   to display link suggestions queried via SeeAlso
  */
-angular.module('ngSuggest').value('version', '0.0.1-pre');
+angular.module('ngSuggest', []).value('version', '0.0.1-pre');
 /**
  * @ngdoc directive
  * @name ng-suggest.directive:seealso-api
@@ -98,9 +98,18 @@ angular.module('ngSuggest').directive('seealsoApi', [
  * [ui.bootstrap.typeahead](http://angular-ui.github.io/bootstrap/#typeahead)
  * search suggestions (aka autosuggest) from an OpenSearch Suggestions server.
  * Standard options of the typeahead directive (e.g. `typeahead-on-select` and
- * `typeahead-template-url`) can be used as well.
+ * `typeahead-template-url`) can be used as well. A default template is used
+ * unless `typeahead-template-url` is explicitly set.
  *
- * # Source code
+ * ## Customization
+ *
+ * The [default template](https://github.com/gbv/ng-suggest/blob/master/src/templates/suggest-typeahead.html)
+ * for displaying suggestion items (CSS class 
+ * `suggest-typeahead-item`) includes an item's label (CSS class 
+ * `suggest-typeahead-label` and description (CSS class 
+ * `suggest-typeahead-description`).
+ *
+ * ## Source code
  * 
  * The most recent
  * [source code](https://github.com/gbv/ng-suggest/blob/master/src/directives/suggestTypeahead.js)
@@ -159,7 +168,11 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
             });
           };
         }
-        // insert typeahead directive, if not explicitly given
+        // use default template unless explicitly given
+        if (!attrs.typeaheadTemplateUrl) {
+          attrs.$set('typeaheadTemplateUrl', 'template/suggest-typeahead.html');
+        }
+        // insert typeahead directive unless explicitly given
         var typeaheadLink = function () {
         };
         if (!attrs.typeahead) {
@@ -175,19 +188,13 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
         return function (scope, element, attrs, modelCtrl) {
           suggestLink(scope, element, attrs);
           // typeahead directive expects the original scope, that's
-          // why the suggest function needs to be defined at parent
+          // why the suggest function needs to be defined at parent scope
           typeaheadLink(scope.$parent, element, attrs, modelCtrl);
         };
       }
     };
   }
 ]);
-// TODO: if api is URL => create oss
-// if api is service object ... use it (support transform by this)
-// if api is function
-//   <input ng-model="input1" 
-//          suggest-typeahead="http://..."
-//          suggest-typeahead="{{service}}
 /**
  * @ngdoc service
  * @name ng-suggest.service:OpenSearchSuggestions
@@ -350,10 +357,11 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
         this.url += '{searchTerms}';
       }
       this.transform = args.transform ? args.transform : transformSuggestions;
-      this.jsonp = args.jsonp;
-      if (this.jsonp === true || this.jsonp.match(/^\d/)) {
-        this.jsonp = 'callback';
+      var jsonp = args.jsonp;
+      if (jsonp && (jsonp === true || angular.isNumber(jsonp) || jsonp.match(/^\d/))) {
+        jsonp = 'callback';
       }
+      this.jsonp = jsonp;
     };
     // method
     OpenSearchSuggestions.prototype = {
@@ -372,7 +380,7 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
         url = url.replace('{searchTerms}', decodeURIComponent(searchTerms));
         return get(url).then(function (response) {
           try {
-            return transform(response.data);
+            return transform(response.data, searchTerms);
           } catch (e) {
             return $q.reject(e);
           }
@@ -445,5 +453,12 @@ angular.module('ngSuggest').factory('SeeAlso', [
     ;
     SeeAlso.prototype = new OpenSearchSuggestions();
     return SeeAlso;
+  }
+]);
+angular.module('ngSuggest').run([
+  '$templateCache',
+  function ($templateCache) {
+    'use strict';
+    $templateCache.put('template/suggest-typeahead.html', '<a tabindex="-1" class="suggest-typeahead-item"><div bind-html-unsafe="match.label | typeaheadHighlight:query" class="suggest-typeahead-label"></div><i ng-if="match.model.description" class="suggest-typeahead-description">{{match.model.description}}</i></a>');
   }
 ]);
