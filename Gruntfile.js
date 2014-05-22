@@ -42,7 +42,10 @@ module.exports = function(grunt) {
                 scripts: [ 
                     'angular.js',
                     'ng-suggest.min.js',
-//                    'ng-suggest.js' 
+/*                    
+                    "http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js",
+                    "http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"
+*/                    
                 ]
             },
             api: {
@@ -116,8 +119,12 @@ module.exports = function(grunt) {
         },
         shell: {
             demo: {
-                // TODO: use ng-suggest.min.js instead of partials
-                command: "rm -rf docs/demo && cp -r demo docs"
+                command: [
+                    "rm -rf docs/demo",
+                    "cp -r demo docs",
+                    "cp ng-suggest.js docs/grunt-scripts",
+                    "perl -pi -e 's|<script src=\"\\.\\..+|<script src=\"../grunt-scripts/ng-suggest.js\"></script>|' docs/demo/*.html"
+                ].join('&&')
             },
             site: {
                 command: "rm -rf site && mkdir site && cp -r docs/* site"

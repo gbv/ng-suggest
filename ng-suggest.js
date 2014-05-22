@@ -26,7 +26,7 @@
  *   {@link ng-suggest.directive:seealso-api seealso-api}
  *   to display link suggestions queried via SeeAlso
  */
-angular.module('ngSuggest', []).value('version', '0.0.1-pre');
+angular.module('ngSuggest', []).value('version', '0.1.0');
 /**
  * @ngdoc directive
  * @name ng-suggest.directive:seealso-api
@@ -36,23 +36,10 @@ angular.module('ngSuggest', []).value('version', '0.0.1-pre');
  * This directive displaysy link suggestions queried via SeeAlso link
  * server protocol.
  *
- * The directive has not been implemented yet!
+ * ## Scope
  *
- * <pre class="prettyprint linenums">
- * <!-- comma-separated -->
- * <span seealso-api="http://example.org/" seealso-id="123"/>
- * <!-- list -->
- * <ul seealso-api="http://example.org/" seealso-id="123"/>
- * <ol seealso-api="http://example.org/" seealso-id="123"/>
- * <!-- image -->
- * <img seealso-api="http://example.org/" seealso-id="123"/>
- * <!-- custom template -->
- * <div seealso-api="http://example.org/" seealso-id="123">
- * ...
- * </div>
- * <!-- custom template, referenced -->
- * <div seealso-api="http://example.org/" seealso-id="123" template-url="..." />
- * </pre>
+ * The link suggestions are injected in the template's scope as `query`
+ * and `links`.
  *
  * ## Source code
  *
@@ -61,8 +48,22 @@ angular.module('ngSuggest', []).value('version', '0.0.1-pre');
  * of this service is available at GitHub.
  *
  * @param {string} seealso-api Base URL of SeeAlso server to query from
+ * @param {string} jsonp enable JSONP (if service given as URL)
  * @param {string} seealso-id Identifier to query for
  * @param {string} template-url Custom template to display result with
+ *
+ * @example
+ <example module="myApp">
+  <file name="index.html">
+    <div>
+      <div seealso-api="http://ws.gbv.de/seealso/isbn2wikipedia" jsonp=1 
+           seealso-id="3-447-03706-7" />
+    </div>
+  </file>
+  <file name="script.js">
+    angular.module('myApp',['ngSuggest']);
+  </file>
+</example>
  */
 angular.module('ngSuggest').directive('seealsoApi', [
   'SeeAlso',
@@ -71,19 +72,39 @@ angular.module('ngSuggest').directive('seealsoApi', [
       restrict: 'A',
       scope: {
         api: '@seealsoApi',
-        id: '@seealsoId'
+        id: '@seealsoId',
+        jsonp: '@jsonp'
+      },
+      templateUrl: function (elem, attrs) {
+        return attrs.templateUrl ? attrs.templateUrl : 'template/seealso-response.html';
       },
       link: function (scope, element, attr) {
-        function request() {
-        }
-        ;
-        // TODO: don't call twice
-        scope.$watch('api', function () {
-          request();
-        });
+        // request when id changes
         scope.$watch('id', function () {
+          if (scope.service)
+            request();
+        });
+        // create a SeeAlso service instance
+        scope.$watch('api', function (service) {
+          if (angular.isObject(service) && service instanceof SeeAlso) {
+            scope.service = service;
+          } else {
+            if (!angular.isObject(service)) {
+              service = {
+                url: service,
+                jsonp: scope.jsonp
+              };
+            }
+            scope.service = new SeeAlso(service);
+          }
           request();
         });
+        function request() {
+          scope.service.suggest(scope.id).then(function (response) {
+            scope.query = response.query;
+            scope.links = response.values;
+          });
+        }
       }
     };
   }
@@ -118,7 +139,7 @@ angular.module('ngSuggest').directive('seealsoApi', [
  * @param {string} suggest-typeahead Angular expression with URL as string or 
  *      {@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions}
  *      object
- * @param {string} json enable JSONP (if service given as URL)
+ * @param {string} jsonp enable JSONP (if service given as URL)
  *
  * @example
  * <example module="myApp">
@@ -130,7 +151,7 @@ angular.module('ngSuggest').directive('seealsoApi', [
  *    </div>
  *  </file>
  *  <file name="script.js">
- *    angular.module('myApp',['ngSuggest']);
+ *    angular.module('myApp',['ngSuggest','ui.bootstrap.typeahead']);
  *  </file>
  * </example>
  */
@@ -200,7 +221,7 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
  * @name ng-suggest.service:OpenSearchSuggestions
  * @description
  * 
- * The <b>OpenSearchSuggestions</b> service can be used to query an OpenSearch 
+ * The **OpenSearchSuggestions** service can be used to query an OpenSearch 
  * server for search suggestions. The service is instanciated with an URL
  * template that includes the character sequence `{searchTerms}`:
  *
@@ -241,6 +262,15 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
  *
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
  * this service.
+ *
+ * ## Configuration
+ *
+ * The constructor is passed either an URL pattern as string or an object with
+ * the following options:
+ *
+ * * **url**: URL pattern
+ * * **jsonp**: whether to use JSONP
+ * * **transform**: optional transformation function
  *
  * ## Source code
  * 
@@ -409,6 +439,9 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
  * seealso.suggest(search).then( function(links) { ... });
  * </pre>
  *
+ * See {@link ng-suggest.directive:seealso-api seealso-api} for easy usage of
+ * this service in a directive.
+ *
  * ## Source code
  *
  * The most recent 
@@ -420,7 +453,8 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
   <file name="index.html">
     <div ng-controller="myController">
       <div>
-        <input ng-model="query" class="search-query"/> 
+        <label>ISBN:</label>
+        <input ng-model="isbn" class="search-query" /> 
       </div>
       <div><pre>{{links | json}}</pre></div>
     </div>
@@ -428,18 +462,17 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
   <file name="script.js">
     angular.module('myApp',['ngSuggest']);
     function myController($scope, SeeAlso) {
-        // TODO: use another SeeAlso server for demo
-        $scope.seealso = new SeeAlso("http://kug.ub.uni-koeln.de/portal/kug/connector/seealso/isbn2wikipedia");
-        $scope.$watch('query', function updateSearch(query) {
-            console.log("query"+query);
-            $scope.seealso.suggest(query).then(function(links) {
+        $scope.isbn = "3-447-03706-7";
+        var url = "http://ws.gbv.de/seealso/isbn2wikipedia";
+        $scope.seealso = new SeeAlso({url:url, jsonp: 1});
+        $scope.$watch('isbn', function(isbn) {
+            $scope.seealso.suggest(isbn).then(function(links) {
                 $scope.links = links;
             });
         });
     }
   </file>
 </example>
- * 
  */
 angular.module('ngSuggest').factory('SeeAlso', [
   'OpenSearchSuggestions',
@@ -459,6 +492,7 @@ angular.module('ngSuggest').run([
   '$templateCache',
   function ($templateCache) {
     'use strict';
+    $templateCache.put('template/seealso-response.html', '<ul ng-if="links"><li ng-repeat="link in links"><a ng-if="link.url" href="{{link.url}}" title="{{link.description}}">{{link.label}}</a> <span ng-if="!link.url">{{link.label}}</span></li></ul>');
     $templateCache.put('template/suggest-typeahead.html', '<a tabindex="-1" class="suggest-typeahead-item"><div bind-html-unsafe="match.label | typeaheadHighlight:query" class="suggest-typeahead-label"></div><i ng-if="match.model.description" class="suggest-typeahead-description">{{match.model.description}}</i></a>');
   }
 ]);

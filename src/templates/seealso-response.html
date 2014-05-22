@@ -1,0 +1,8 @@
+<ul ng-if="links">
+    <li ng-repeat="link in links">
+      <a ng-if="link.url" href="{{link.url}}" title="{{link.description}}">
+        {{link.label}}
+      </a>
+      <span ng-if="!link.url">{{link.label}}</span>
+    </li>
+</ul> 

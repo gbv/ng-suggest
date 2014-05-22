@@ -1,6 +1,6 @@
 {
   "name": "ng-suggest",
-  "version": "0.0.1-pre",
+  "version": "0.1.0",
   "author": "Jakob Voß <voss@gbv.de>",
   "contributor": ["Moritz Horn <moritz.horn@gmail.com>"], 
   "description": "AngularJS module to use OpenSearch Suggestions and SeeAlso",

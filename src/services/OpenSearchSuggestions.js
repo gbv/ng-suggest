@@ -3,7 +3,7 @@
  * @name ng-suggest.service:OpenSearchSuggestions
  * @description
  * 
- * The <b>OpenSearchSuggestions</b> service can be used to query an OpenSearch 
+ * The **OpenSearchSuggestions** service can be used to query an OpenSearch 
  * server for search suggestions. The service is instanciated with an URL
  * template that includes the character sequence `{searchTerms}`:
  *
@@ -44,6 +44,15 @@
  *
  * See {@link ng-suggest.service:SeeAlso SeeAlso} for a simplified subclass of 
  * this service.
+ *
+ * ## Configuration
+ *
+ * The constructor is passed either an URL pattern as string or an object with
+ * the following options:
+ *
+ * * **url**: URL pattern
+ * * **jsonp**: whether to use JSONP
+ * * **transform**: optional transformation function
  *
  * ## Source code
  * 

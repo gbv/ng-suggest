@@ -15,6 +15,9 @@
  * seealso.suggest(search).then( function(links) { ... });
  * </pre>
  *
+ * See {@link ng-suggest.directive:seealso-api seealso-api} for easy usage of
+ * this service in a directive.
+ *
  * ## Source code
  *
  * The most recent 
@@ -26,7 +29,8 @@
   <file name="index.html">
     <div ng-controller="myController">
       <div>
-        <input ng-model="query" class="search-query"/> 
+        <label>ISBN:</label>
+        <input ng-model="isbn" class="search-query" /> 
       </div>
       <div><pre>{{links | json}}</pre></div>
     </div>
@@ -34,18 +38,17 @@
   <file name="script.js">
     angular.module('myApp',['ngSuggest']);
     function myController($scope, SeeAlso) {
-        // TODO: use another SeeAlso server for demo
-        $scope.seealso = new SeeAlso("http://kug.ub.uni-koeln.de/portal/kug/connector/seealso/isbn2wikipedia");
-        $scope.$watch('query', function updateSearch(query) {
-            console.log("query"+query);
-            $scope.seealso.suggest(query).then(function(links) {
+        $scope.isbn = "3-447-03706-7";
+        var url = "http://ws.gbv.de/seealso/isbn2wikipedia";
+        $scope.seealso = new SeeAlso({url:url, jsonp: 1});
+        $scope.$watch('isbn', function(isbn) {
+            $scope.seealso.suggest(isbn).then(function(links) {
                 $scope.links = links;
             });
         });
     }
   </file>
 </example>
- * 
  */
 angular.module('ngSuggest')
 .factory('SeeAlso', function(OpenSearchSuggestions) {

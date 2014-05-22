@@ -18,10 +18,6 @@ The current release of <%= name %> is version <%= version %>, including:
 
 * [ng-suggest.min.js](grunt-scripts/ng-suggest.min.js): minified version for production
 * [ng-suggest.js](grunt-scripts/ng-suggest.js): original source code for development
-* [ng-suggest.css](https://github.com/gbv/ng-suggest/raw/master/src/ng-suggest.css):
-  stylesheet for the default templates
-
-**TODO: css required? ng-suggest.js available?**
 
 ## Getting started
 
@@ -30,7 +26,11 @@ by {@link ng-suggest ng-suggest}.
 
 ## Customization
 
-...TODO...
+To support APIs that do not strictly follow OpenSearch Suggest specification, the
+{@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions} service
+can be customized with a transformation function. The 
+{@link ng-suggest.directive:suggest-typeahead suggest-typeahead} directive contains
+a default template that can be replaced or styled with CSS.
 
 ## Author and Contributors
 

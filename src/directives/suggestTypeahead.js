@@ -28,7 +28,7 @@
  * @param {string} suggest-typeahead Angular expression with URL as string or 
  *      {@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions}
  *      object
- * @param {string} json enable JSONP (if service given as URL)
+ * @param {string} jsonp enable JSONP (if service given as URL)
  *
  * @example
  * <example module="myApp">
@@ -40,7 +40,7 @@
  *    </div>
  *  </file>
  *  <file name="script.js">
- *    angular.module('myApp',['ngSuggest']);
+ *    angular.module('myApp',['ngSuggest','ui.bootstrap.typeahead']);
  *  </file>
  * </example>
  */
