@@ -8,26 +8,27 @@
 </blockquote>
 <p><strong>ng-suggest</strong> is a module for <a href="http://angularjs.org/">AngularJS</a> to facilitate 
 the use of <a href="http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.0">OpenSearch Suggestions</a> and <a href="http://www.gbv.de/wikis/cls/SeeAlso">SeeAlso links</a> in web application.</p>
-<p>The latest release of ng-suggest is version 0.0.1-pre. Source code and issue tracker
+<p>The latest release of ng-suggest is version 0.1.0. Source code and issue tracker
 can be found at <a href="https://github.com/gbv/ng-suggest">https://github.com/gbv/ng-suggest</a>.</p>
 <h3 id="ng-suggest_download">Download</h3>
-<p>The current release of ng-suggest is version 0.0.1-pre, including:</p>
+<p>The current release of ng-suggest is version 0.1.0, including:</p>
 <ul>
 <li><a href="grunt-scripts/ng-suggest.min.js">ng-suggest.min.js</a>: minified version for production</li>
 <li><a href="grunt-scripts/ng-suggest.js">ng-suggest.js</a>: original source code for development</li>
-<li><a href="https://github.com/gbv/ng-suggest/raw/master/src/ng-suggest.css">ng-suggest.css</a>:
-stylesheet for the default templates</li>
 </ul>
-<p><strong>TODO: css required? ng-suggest.js available?</strong></p>
 <h3 id="ng-suggest_getting-started">Getting started</h3>
 <p>For details and examples see the documentation of services and directives provided
 by <a href="#/api/ng-suggest">ng-suggest</a>.</p>
 <h3 id="ng-suggest_customization">Customization</h3>
-<p>...TODO...</p>
+<p>To support APIs that do not strictly follow OpenSearch Suggest specification, the
+<a href="#/api/ng-suggest.service:OpenSearchSuggestions">OpenSearchSuggestions</a> service
+can be customized with a transformation function. The 
+<a href="#/api/ng-suggest.directive:suggest-typeahead">suggest-typeahead</a> directive contains
+a default template that can be replaced or styled with CSS.</p>
 <h3 id="ng-suggest_author-and-contributors">Author and Contributors</h3>
 <ul>
-<li>Jakob Voß <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#x76;&#111;&#115;&#115;&#x40;&#x67;&#98;&#x76;&#x2e;&#100;&#x65;">&#x76;&#111;&#115;&#115;&#x40;&#x67;&#98;&#x76;&#x2e;&#100;&#x65;</a></li>
-<li>Moritz Horn <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#111;&#58;&#109;&#111;&#114;&#105;&#x74;&#x7a;&#46;&#x68;&#111;&#114;&#110;&#x40;&#x67;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;">&#109;&#111;&#114;&#105;&#x74;&#x7a;&#46;&#x68;&#111;&#114;&#110;&#x40;&#x67;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;</a></li>
+<li>Jakob Voß <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#118;&#111;&#x73;&#x73;&#64;&#x67;&#98;&#x76;&#x2e;&#100;&#x65;">&#118;&#111;&#x73;&#x73;&#64;&#x67;&#98;&#x76;&#x2e;&#100;&#x65;</a></li>
+<li>Moritz Horn <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x6d;&#x6f;&#114;&#105;&#116;&#122;&#x2e;&#104;&#x6f;&#x72;&#x6e;&#x40;&#x67;&#109;&#x61;&#x69;&#108;&#46;&#x63;&#111;&#x6d;">&#x6d;&#x6f;&#114;&#105;&#116;&#122;&#x2e;&#104;&#x6f;&#x72;&#x6e;&#x40;&#x67;&#109;&#x61;&#x69;&#108;&#46;&#x63;&#111;&#x6d;</a></li>
 </ul>
 <h3 id="ng-suggest_license">License</h3>
 <p>Code licensed under the <a href="http://www.gnu.org/licenses/agpl-3.0.html">AGPL</a>.
