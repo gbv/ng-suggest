@@ -31,7 +31,7 @@ function myController($scope, OpenSearchSuggestions) {
             jsonp: 'jsonp'
         },
         {
-            url: "http://api.lobid.org/person?format=short&name=",
+            url: "http://api.lobid.org/subject?format=short&name=",
             transform: function(r,q) {
                 return {
                     query: q,
