@@ -152,6 +152,23 @@ Cartography and Geodesy</a>. The entries are contextualized by a type, for examp
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12"><h3>Lobid-API: People</h3></div>
+            <div class="col-md-6">
+                <p>GND people via <a href="http://lobid.org/api">lobid.org</a></p>
+            </div>
+            <div class="col-md-6">
+                <input style="width:400px" class="form-control"
+                    typeahead-loading="loadingLocations7"
+                    typeahead-on-select="example[6].onSelect($item)"
+                    ng-model="example[6].input" 
+                    suggest-typeahead="example[6].service"
+                    placeholder="Search Lobid subjects"
+                />
+                <i ng-show="loadingLocations7" class="loading-icon glyphicon glyphicon-refresh"></i>
+            </div>
+        </div>
+
     </div>
 
     <div class="footer">
