@@ -21,7 +21,6 @@
     "test",
     "demo",
     "docs",
-    "lib",
     "node_modules",
     "Gruntfile.js",
     "karma.conf.js"
