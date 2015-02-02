@@ -6,12 +6,14 @@
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" />
     <link href="app.css" rel="stylesheet" />
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-sanitize.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
     <script src="../src/ng-suggest.js"></script>
     <script src="../src/services/OpenSearchSuggestions.js"></script>
     <script src="../src/directives/suggestTypeahead.js"></script>
     <script src="../src/directives/seealsoApi.js"></script>
+    <script src="../src/filters/htmlEscape.js"></script>
     <script src="app.js"></script>
 </head>
 <body ng-controller="myController">
@@ -33,6 +35,7 @@
                   Geonames (<a href="http://geonames.org">geonames.org/</a>) provides a lot of data for geographic places. This includes coordinates and markings on a map, as well as other contextual information.
                 </p>
             </div>
+        {{example[0].api | htmlescape}}
             <div class="col-md-6">
                 <input style="width:400px" class="form-control"
                     typeahead-loading="loadingLocations1"
