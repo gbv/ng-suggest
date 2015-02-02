@@ -27,7 +27,7 @@
  *   to display link suggestions queried via SeeAlso
  */
 angular.module('ngSuggest',[])
-.value('ngSuggest.version', '0.1.0');
+.value('ngSuggest.version', '0.1.1');
 
 /**
  * @ngdoc directive
@@ -232,6 +232,12 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
     };
 }]);
 
+angular.module('ngSuggest')
+.filter('htmlescape', function(){
+     return function(input){
+        return input?input.replace(/[<>]/g , "-"):'';
+    };
+});
 /**
  * @ngdoc service
  * @name ng-suggest.service:OpenSearchSuggestions
@@ -518,7 +524,7 @@ angular.module('ngSuggest').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('template/suggest-typeahead.html',
-    "<a tabindex=\"-1\" class=\"suggest-typeahead-item\"><div bind-html-unsafe=\"match.label | typeaheadHighlight:query\" class=\"suggest-typeahead-label\"></div><i ng-if=\"match.model.description\" class=\"suggest-typeahead-description\">{{match.model.description}}</i></a>"
+    "<a tabindex=\"-1\" class=\"suggest-typeahead-item\"><div bind-html-unsafe=\"match.label | htmlescape |  typeaheadHighlight:query\" class=\"suggest-typeahead-label\"></div><i ng-if=\"match.model.description\" class=\"suggest-typeahead-description\">{{match.model.description}}</i></a>"
   );
 
 }]);

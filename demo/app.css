@@ -1,4 +1,4 @@
-// as documented at http://angular-ui.github.io/bootstrap/#/getting_started
+/* as documented at http://angular-ui.github.io/bootstrap/#/getting_started */
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 .loading-icon {
