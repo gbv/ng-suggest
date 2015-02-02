@@ -1,6 +1,6 @@
 NG_DOCS={
   "sections": {
-    "api": "API documentation"
+    "api": "Documentation"
   },
   "pages": [
     {
@@ -10,7 +10,16 @@ NG_DOCS={
       "type": "overview",
       "moduleName": "index",
       "shortDescription": "ng-suggest",
-      "keywords": "angularjs api apis application author code contributors css current customization customized de default details development directive directives documentation download examples facilitate follow function gbv gnu horn html including issue jakob js latest license licensed links min minified module moritz ng-suggest opensearch opensearchsuggestions org original overview production provided release replaced seealso service services source specification started strictly styled suggest-typeahead suggestions support template tracker transformation version vo web"
+      "keywords": "api apis application appreciated bash bower code contributing contributions contributors coverage css customization customized de default development directive documentation examples facilitate follow function gbv github gnu horn html install io issues jakob license licensed links md module moritz ng-suggest npm npmjs opensearch opensearchsuggestions org overview provide replaced service shields specification status strictly styled suggest-typeahead suggestions support svg template transformation typeahead usage version vo web"
+    },
+    {
+      "section": "api",
+      "id": "contributing",
+      "shortName": "Contributing",
+      "type": "overview",
+      "moduleName": "ng-suggest",
+      "shortDescription": "Contributing",
+      "keywords": "api application automatically backwards break bug build bump bumped call change changes code commit compatibility conf configured consists contious contributing demo dependencies developer docs documentation don execute executed existing features fixes git github global grunt grunt-cli includes increment install installation installing io issue js json karma listed major middle minor ng-suggest node npm number numeric org overview package packages parts patch prepend publish pushed re-run release released releases repository running sites source src sudo suffix task test testing tests three tracker travis travis-ci unit updated version versions watch written yml"
     },
     {
       "section": "api",
@@ -62,6 +71,7 @@ NG_DOCS={
     "api": true
   },
   "html5Mode": false,
+  "editExample": true,
   "startPage": "/api",
   "scripts": [
     "angular.min.js",

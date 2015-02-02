@@ -26,7 +26,9 @@
  *   {@link ng-suggest.directive:seealso-api seealso-api}
  *   to display link suggestions queried via SeeAlso
  */
-angular.module('ngSuggest', []).value('version', '0.1.0');
+angular.module('ngSuggest',[])
+.value('ngSuggest.version', '0.1.0');
+
 /**
  * @ngdoc directive
  * @name ng-suggest.directive:seealso-api
@@ -65,50 +67,54 @@ angular.module('ngSuggest', []).value('version', '0.1.0');
   </file>
 </example>
  */
-angular.module('ngSuggest').directive('seealsoApi', [
-  'SeeAlso',
-  function (SeeAlso) {
+angular.module('ngSuggest')
+.directive('seealsoApi',['SeeAlso',function(SeeAlso){
     return {
-      restrict: 'A',
-      scope: {
-        api: '@seealsoApi',
-        id: '@seealsoId',
-        jsonp: '@jsonp'
-      },
-      templateUrl: function (elem, attrs) {
-        return attrs.templateUrl ? attrs.templateUrl : 'template/seealso-response.html';
-      },
-      link: function (scope, element, attr) {
-        // request when id changes
-        scope.$watch('id', function () {
-          if (scope.service)
-            request();
-        });
-        // create a SeeAlso service instance
-        scope.$watch('api', function (service) {
-          if (angular.isObject(service) && service instanceof SeeAlso) {
-            scope.service = service;
-          } else {
-            if (!angular.isObject(service)) {
-              service = {
-                url: service,
-                jsonp: scope.jsonp
-              };
+        restrict: 'A',
+        scope: {
+            api: '@seealsoApi',
+            id: '@seealsoId',
+            jsonp: '@jsonp',
+        },
+        templateUrl: function(elem, attrs) {
+            return attrs.templateUrl ? 
+                   attrs.templateUrl : 'template/seealso-response.html';
+        },
+        link: function(scope, element, attr) {
+
+            // request when id changes
+            scope.$watch('id',function(){ 
+                if (scope.service) request();
+            });
+
+            // create a SeeAlso service instance
+            scope.$watch('api',function(service) {
+                if (angular.isObject(service) && service instanceof SeeAlso) {
+                    scope.service = service;
+                } else {
+                    if (!angular.isObject(service)) {
+                        service = {
+                            url: service,
+                            jsonp: scope.jsonp,
+                       };
+                    }
+                    scope.service = new SeeAlso(service);
+                }
+                request();
+            });
+
+            function request() {
+                scope.service.suggest(scope.id).then(
+                    function(response) { 
+                        scope.query = response.query;
+                        scope.links = response.values; 
+                    }
+                );
             }
-            scope.service = new SeeAlso(service);
-          }
-          request();
-        });
-        function request() {
-          scope.service.suggest(scope.id).then(function (response) {
-            scope.query = response.query;
-            scope.links = response.values;
-          });
         }
-      }
     };
-  }
-]);
+}]);
+
 /**
  * @ngdoc directive
  * @name ng-suggest.directive:suggest-typeahead
@@ -155,67 +161,77 @@ angular.module('ngSuggest').directive('seealsoApi', [
  *  </file>
  * </example>
  */
-angular.module('ngSuggest').directive('suggestTypeahead', [
-  'OpenSearchSuggestions',
-  '$injector',
-  function (OpenSearchSuggestions, $injector) {
+angular.module('ngSuggest').directive('suggestTypeahead',[
+    'OpenSearchSuggestions','$injector',
+    function(OpenSearchSuggestions,$injector) {
     return {
-      restrict: 'A',
-      scope: {
-        api: '=suggestTypeahead',
-        jsonp: '@jsonp'
-      },
-      require: 'ngModel',
-      compile: function (element, attrs) {
-        var suggestFunction = 'suggest_' + Math.random().toString(36).slice(2);
-        // defines scope.service and scope.suggest
-        function suggestLink(scope, element, attrs) {
-          // create an OpenSearchSuggestions service instance
-          scope.$watch('api', function (service) {
-            if (angular.isObject(service)) {
-              scope.service = service;
-            } else {
-              scope.service = new OpenSearchSuggestions({
-                url: service,
-                jsonp: scope.jsonp
-              });
+        restrict: 'A',
+        scope: {
+            api: '=suggestTypeahead',
+            jsonp: '@jsonp',
+        },
+
+        // based on http://stackoverflow.com/questions/15279244 and more hours of work
+        require: 'ngModel',
+        compile: function(element, attrs) {
+
+            var suggestFunction = "suggest_" + Math.random().toString(36).slice(2);
+       
+            // defines scope.service and scope.suggest
+            function suggestLink(scope,element,attrs) {
+
+                // create an OpenSearchSuggestions service instance
+                scope.$watch('api',function(service) {
+                    if (angular.isObject(service)) {
+                        scope.service = service;
+                    } else {
+                        scope.service = new OpenSearchSuggestions({
+                            url: service,
+                            jsonp: scope.jsonp,
+                        });
+                    }
+                });
+
+                // create suggest function that queries the service
+                scope.$parent[suggestFunction] = function(value) {
+                    var s = scope.service.suggest(value);
+                    return s.then(function(suggestions){ 
+                        return suggestions.values; 
+                    })
+                };
+                
             }
-          });
-          // create suggest function that queries the service
-          scope.$parent[suggestFunction] = function (value) {
-            var s = scope.service.suggest(value);
-            return s.then(function (suggestions) {
-              return suggestions.values;
-            });
-          };
-        }
-        // use default template unless explicitly given
-        if (!attrs.typeaheadTemplateUrl) {
-          attrs.$set('typeaheadTemplateUrl', 'template/suggest-typeahead.html');
-        }
-        // insert typeahead directive unless explicitly given
-        var typeaheadLink = function () {
-        };
-        if (!attrs.typeahead) {
-          if (!$injector.has('typeaheadDirective')) {
-            throw new Error('ui.bootstrap.typehead directive required!');
-          }
-          var expr = 'item.label for item in ' + suggestFunction + '($viewValue) | filter:$viewValue';
-          attrs.$set('typeahead', expr);
-          var directive = $injector.get('typeaheadDirective')[0];
-          typeaheadLink = directive.compile(element, attrs);
-        }
-        // call both link functions
-        return function (scope, element, attrs, modelCtrl) {
-          suggestLink(scope, element, attrs);
-          // typeahead directive expects the original scope, that's
-          // why the suggest function needs to be defined at parent scope
-          typeaheadLink(scope.$parent, element, attrs, modelCtrl);
-        };
-      }
+            
+            // use default template unless explicitly given
+            if (!attrs.typeaheadTemplateUrl) {
+                attrs.$set('typeaheadTemplateUrl','template/suggest-typeahead.html');
+            }
+
+            // insert typeahead directive unless explicitly given
+            var typeaheadLink = function() { };
+            if (!attrs.typeahead) {
+                if ( !$injector.has("typeaheadDirective") ) {
+                    throw new Error("ui.bootstrap.typehead directive required!");
+                }
+
+                var expr = "item.label for item in "+suggestFunction+"($viewValue) | filter:$viewValue";
+                attrs.$set('typeahead',expr);
+                
+                var directive = $injector.get("typeaheadDirective")[0];
+                typeaheadLink = directive.compile(element, attrs);
+            }
+
+            // call both link functions
+            return function(scope, element, attrs, modelCtrl) {
+                suggestLink(scope, element, attrs);
+                // typeahead directive expects the original scope, that's
+                // why the suggest function needs to be defined at parent scope
+                typeaheadLink(scope.$parent, element, attrs, modelCtrl);
+            };
+        },
     };
-  }
-]);
+}]);
+
 /**
  * @ngdoc service
  * @name ng-suggest.service:OpenSearchSuggestions
@@ -355,73 +371,80 @@ angular.module('ngSuggest').directive('suggestTypeahead', [
   </file>
 </example>
  */
-angular.module('ngSuggest').factory('OpenSearchSuggestions', [
-  '$http',
-  '$q',
-  function ($http, $q) {
+angular.module('ngSuggest')
+.factory('OpenSearchSuggestions',['$http','$q',function($http, $q) {
+
     // transform suggestions array to object
-    var transformSuggestions = function (data) {
-      var suggestions = {
-          query: data[0],
-          values: []
+    var transformSuggestions = function(data) {
+        var suggestions = { 
+            query: data[0], 
+            values: [ ] 
         };
-      if (!angular.isArray(data[2]))
-        data[2] = [];
-      if (!angular.isArray(data[3]))
-        data[3] = [];
-      for (var i = 0; i < data[1].length; i++) {
-        suggestions.values.push({
-          label: data[1][i],
-          description: data[2][i],
-          url: data[3][i]
-        });
-      }
-      return suggestions;
+        if (!angular.isArray(data[2])) data[2] = [ ];
+        if (!angular.isArray(data[3])) data[3] = [ ];
+        for(var i=0; i<data[1].length; i++) {
+            suggestions.values.push( { 
+                label:       data[1][i], 
+                description: data[2][i],
+                url:         data[3][i]
+            } );
+        }
+        return suggestions;                
     };
+
     // constructor
-    var OpenSearchSuggestions = function (args) {
-      if (!angular.isObject(args))
-        args = { url: args };
-      this.url = args.url;
-      if (this.url && this.url.indexOf('{searchTerms}') == -1) {
-        this.url += '{searchTerms}';
-      }
-      this.transform = args.transform ? args.transform : transformSuggestions;
-      var jsonp = args.jsonp;
-      if (jsonp && (jsonp === true || angular.isNumber(jsonp) || jsonp.match(/^\d/))) {
-        jsonp = 'callback';
-      }
-      this.jsonp = jsonp;
+    var OpenSearchSuggestions = function(args) {
+        if (!angular.isObject(args)) args = { url: args };
+
+        this.url = args.url;
+        if (this.url && this.url.indexOf('{searchTerms}') == -1) {
+            this.url += '{searchTerms}';
+        }
+        this.transform = args.transform ? args.transform : transformSuggestions;
+
+        var jsonp = args.jsonp;
+        if (jsonp && (jsonp === true || angular.isNumber(jsonp) || jsonp.match(/^\d/))) {
+            jsonp = 'callback';
+        }
+        this.jsonp = jsonp;
     };
+
     // method
     OpenSearchSuggestions.prototype = {
-      suggest: function (searchTerms) {
-        if (!this.url) {
-          return $q.reject(null);
+        suggest: function(searchTerms) {
+            if (!this.url) {
+                return $q.reject(null);
+            }
+
+            var url = this.url;
+            var transform = this.transform;
+            var get = $http.get;
+
+            if (this.jsonp) {
+                get = $http.jsonp;
+                url += (url.indexOf('?') == -1 ? '?' : '&');
+                url += this.jsonp + '=JSON_CALLBACK';
+            }
+            
+            url = url.replace('{searchTerms}', decodeURIComponent(searchTerms));
+
+            return get(url).then(
+                function(response) {
+                    try {
+                        return transform(response.data, searchTerms);
+                    } catch(e) {
+                        return $q.reject(e);
+                    }
+                }, function(response) {
+                    return $q.reject(response.data);
+                }
+            );
         }
-        var url = this.url;
-        var transform = this.transform;
-        var get = $http.get;
-        if (this.jsonp) {
-          get = $http.jsonp;
-          url += url.indexOf('?') == -1 ? '?' : '&';
-          url += this.jsonp + '=JSON_CALLBACK';
-        }
-        url = url.replace('{searchTerms}', decodeURIComponent(searchTerms));
-        return get(url).then(function (response) {
-          try {
-            return transform(response.data, searchTerms);
-          } catch (e) {
-            return $q.reject(e);
-          }
-        }, function (response) {
-          return $q.reject(response.data);
-        });
-      }
     };
     return OpenSearchSuggestions;
-  }
-]);
+}]);
+
+
 /**
  * @ngdoc service
  * @name ng-suggest.service:SeeAlso
@@ -474,25 +497,28 @@ angular.module('ngSuggest').factory('OpenSearchSuggestions', [
   </file>
 </example>
  */
-angular.module('ngSuggest').factory('SeeAlso', [
-  'OpenSearchSuggestions',
-  function (OpenSearchSuggestions) {
+angular.module('ngSuggest')
+.factory('SeeAlso', ["OpenSearchSuggestions", function(OpenSearchSuggestions) {
     function SeeAlso(args) {
-      if (!angular.isObject(args))
-        args = { url: args };
-      args.url += '?id={searchTerms}&format=seealso';
-      OpenSearchSuggestions.call(this, args);
-    }
-    ;
+        if (!angular.isObject(args)) args = { url: args };
+        args.url += "?id={searchTerms}&format=seealso";
+        OpenSearchSuggestions.call(this,args);
+    };
     SeeAlso.prototype = new OpenSearchSuggestions();
     return SeeAlso;
-  }
-]);
-angular.module('ngSuggest').run([
-  '$templateCache',
-  function ($templateCache) {
-    'use strict';
-    $templateCache.put('template/seealso-response.html', '<ul ng-if="links"><li ng-repeat="link in links"><a ng-if="link.url" href="{{link.url}}" title="{{link.description}}">{{link.label}}</a> <span ng-if="!link.url">{{link.label}}</span></li></ul>');
-    $templateCache.put('template/suggest-typeahead.html', '<a tabindex="-1" class="suggest-typeahead-item"><div bind-html-unsafe="match.label | typeaheadHighlight:query" class="suggest-typeahead-label"></div><i ng-if="match.model.description" class="suggest-typeahead-description">{{match.model.description}}</i></a>');
-  }
-]);
+}]);
+
+
+angular.module('ngSuggest').run(['$templateCache', function($templateCache) {
+  'use strict';
+
+  $templateCache.put('template/seealso-response.html',
+    "<ul ng-if=\"links\"><li ng-repeat=\"link in links\"><a ng-if=\"link.url\" href=\"{{link.url}}\" title=\"{{link.description}}\">{{link.label}}</a> <span ng-if=\"!link.url\">{{link.label}}</span></li></ul>"
+  );
+
+
+  $templateCache.put('template/suggest-typeahead.html',
+    "<a tabindex=\"-1\" class=\"suggest-typeahead-item\"><div bind-html-unsafe=\"match.label | typeaheadHighlight:query\" class=\"suggest-typeahead-label\"></div><i ng-if=\"match.model.description\" class=\"suggest-typeahead-description\">{{match.model.description}}</i></a>"
+  );
+
+}]);

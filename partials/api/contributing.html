@@ -1,0 +1,55 @@
+<h1><code ng:non-bindable=""></code>
+<div><span class="hint"></span>
+</div>
+</h1>
+<div><div class="contributing-page"><h2 id="contributing">Contributing</h2>
+<h3 id="contributing_overview">Overview</h3>
+<ul>
+<li><a href="http://github.com/gbv/ng-suggest/issues">http://github.com/gbv/ng-suggest/issues</a>: issue tracker</li>
+<li><p><a href="http://github.com/gbv/ng-suggest">http://github.com/gbv/ng-suggest</a>: source code repository</p>
+<ul>
+<li><code>src</code> : source code</li>
+<li><code>test</code> : unit tests</li>
+<li><code>demo</code> : demo application</li>
+</ul>
+</li>
+</ul>
+<h3 id="contributing_installing-dependencies">Installing Dependencies</h3>
+<p>Install <a href="https://nodejs.org/">Node.js</a> and <a href="https://gruntjs.com/">Grunt</a>.
+Node.js includes <code>npm</code> which is used to install Grunt and other packages listed
+in <code>package.json</code>:</p>
+<pre><code>npm install -g grunt-cli   # prepend &quot;sudo -H&quot; for global installation
+npm install
+</code></pre><h3 id="contributing_running-the-unit-tests">Running the Unit Tests</h3>
+<p>Unit tests are written with <a href="http://pivotal.github.io/jasmine/">Jasmine</a> and executed with
+<a href="https://karma-runner.github.io/">Karma</a>. Testing is configured in <code>karma.conf.js</code>.</p>
+<p>To execute all unit tests call:</p>
+<pre><code>grunt test
+</code></pre><p>For contious testing (tests are re-run on changes):</p>
+<pre><code>grunt watch
+</code></pre><p>As configured in <code>.travis.yml</code> the tests are automatically <a href="https://travis-ci.org/gbv/ng-suggest">executed at
+travis-ci</a> when pushed to GitHub.</p>
+<p>To build the <strong>documentation</strong>, written using
+<a href="https://github.com/angular/angular.js/wiki/Writing-AngularJS-Documentation">ngdoc</a>,
+call</p>
+<pre><code>grunt docs
+</code></pre><h3 id="contributing_release">Release</h3>
+<p>The version number consists of three numeric parts:</p>
+<ul>
+<li>Bug fixes and other minor changes: Patch release, increment the last number</li>
+<li>New features which don&#39;t break existing features: Minor release, increment the middle number</li>
+<li>Changes which break backwards compatibility: Major release, increment the first number</li>
+</ul>
+<p>A suffix can be added for developer releases.</p>
+<p>Major and minor release 0.0 may change features also in patch releases.</p>
+<p>Versions can be bumped with one of</p>
+<pre><code>grunt version:bump:patch  # e.g. 1.1.1 to 1.0.2
+grunt version:bump:minor  # e.g. 1.1.1 to 1.2.0
+grunt version:bump:major  # e.g. 1.1.1 to 2.0.0
+</code></pre><p>Before release:</p>
+<pre><code>grunt build
+git commit -m &quot;bump version&quot;
+</code></pre><p>The new version can then be released</p>
+<pre><code>grunt publish
+</code></pre><p>Documentation and demo sites are not updated with this task.</p>
+</div></div>
