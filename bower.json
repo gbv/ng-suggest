@@ -27,6 +27,7 @@
     "karma.conf.js"
   ],
   "dependencies": {
-    "angular": "~1.2.0"
+    "angular": "~1.2.0",
+    "angular-bootstrap": "~0.12.0"
   }
 }
