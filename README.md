@@ -1,44 +1,54 @@
-# ng-suggest [![Build Status](https://travis-ci.org/gbv/ng-suggest.png?branch=master)](https://travis-ci.org/gbv/ng-suggest)
+# ng-suggest
 
 > [AngularJS](http://angularjs.org/) module to provide Typeahead via [OpenSearch Suggestions](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.0)
 
-## Usage and documentation
+[![npm version](https://img.shields.io/npm/v/ng-suggest.svg?style=flat)](https://www.npmjs.com/package/ng-suggest)
+[![Build Status](https://travis-ci.org/gbv/ng-suggest.svg)](https://travis-ci.org/gbv/ng-suggest)
+[![Test Coverage](https://coveralls.io/repos/gbv/ng-suggest/badge.svg?branch=master)](https://coveralls.io/r/gbv/ng-suggest?branch=master)
+[![GitHub Issues](https://img.shields.io/github/issues-raw/gbv/ng-suggest.svg?style=flat)](https://github.com/gbv/ng-suggest/issues)
 
-See <http://gbv.github.io/ng-suggest/>.
+**ng-suggest** is a module for [AngularJS](http://angularjs.org/) to facilitate 
+the use of [OpenSearch Suggestions](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.0) and [SeeAlso links](http://www.gbv.de/wikis/cls/SeeAlso) in web application.
 
-## Requirements
+## Install
 
-Require AngularJS >= 1.2.
+### npm
 
-## Development
+```bash
+npm install ng-suggest --safe
+```
 
-First, **clone** the repository from <https://github.com/gbv/ng-suggest>.
+### bower
 
-Second, install Node.js unless it is already installed. Node.js includes `npm`
-to install additional packages. Locally **install all required packages**
-listed in `package.json` (for global installation call `npm` via `sudo -H`):
+```bash
+bower install ng-suggest --safe
+```
 
-    npm install -g grunt-cli
-    npm install
+## Usage
 
-Testing is configured in `karma.conf.js` and **unit tests** are located in
-directory `test` written with [Jasmine](http://pivotal.github.io/jasmine/). 
+See <https://gbv.github.io/ng-suggest/> for documentation and usage examples!
 
-To execute of all unit tests call:
+## Customization
 
-    grunt test
+To support APIs that do not strictly follow OpenSearch Suggest specification, the
+{@link ng-suggest.service:OpenSearchSuggestions OpenSearchSuggestions} service
+can be customized with a transformation function. The 
+{@link ng-suggest.directive:suggest-typeahead suggest-typeahead} directive contains
+a default template that can be replaced or styled with CSS.
 
-For contious testing (tests are re-run on changes), call:
+## Contributing
 
-    grunt watch
+See [`CONTRIBUTING.md`](#/api/contributing) for development documentation.
+Contributions and [feedback](https://github.com/gbv/ng-suggest/issues) is
+appreciated!
 
-As configured in `.travis.yml` the tests are automatically 
-[executed at travis-ci](https://travis-ci.org/gbv/ng-suggest)
-when pushed to GitHub.
+## Contributors
 
-To build the **documentation**, written using
-[ngdoc](https://github.com/angular/angular.js/wiki/Writing-AngularJS-Documentation),
-call
+* Jakob Voß <voss@gbv.de>
+* Moritz Horn <moritz.horn@gmail.com>
 
-    grunt docs
+## License
+
+Code licensed under the [AGPL](http://www.gnu.org/licenses/agpl-3.0.html).
+Documentation licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
 

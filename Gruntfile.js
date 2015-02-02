@@ -7,33 +7,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-ngdocs');
-    grunt.loadNpmTasks('grunt-ngmin');
+    grunt.loadNpmTasks('grunt-ng-annotate');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-version');
-    grunt.loadNpmTasks('grunt-template');
+    grunt.loadNpmTasks('grunt-release');
+    grunt.loadNpmTasks('grunt-git-is-clean');
 
     grunt.initConfig({
         pkg: require('./package.json'),
-        version: { // take version number from package.json
-            moduleVersion: {
-                options: {
-                    prefix: "\\('version',\\s*'"
-                },
-                src: ['src/*.js']
-            },
-        },
-        template: {
-            index: {
-                options: {
-                     data: function() { 
-                        return grunt.config.get('pkg'); 
-                    }
-                },
-                files: {
-                    'src/index.ngdoc': ['src/index.ngdoc.tpl']
-                }
-            }
-        },
         ngdocs: {
             options: {
                 html5Mode: false,
@@ -42,16 +23,15 @@ module.exports = function(grunt) {
                 scripts: [ 
                     'angular.js',
                     'ng-suggest.min.js',
-/*                    
-                    "http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js",
-                    "http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"
-*/                    
                 ]
             },
             api: {
-                title: 'API documentation',
-                src: [ 'src/*.js', 'src/**/*.js', 'src/*.ngdoc' ],
-                api: true,
+                title: 'Documentation',
+                src: [
+                    'src/*.js',
+                    'src/**/*.js',
+                    '*.ngdoc',
+                ],
             },
         },
         connect: {
@@ -62,7 +42,7 @@ module.exports = function(grunt) {
         },
         clean: ['docs'],
         karma: {
-            unit: {
+            unit: { 
                 configFile: 'karma.conf.js',
                 keepalive: true,
                 singleRun: true,
@@ -79,7 +59,7 @@ module.exports = function(grunt) {
             app: {
                 cwd:  'src/templates',
                 src: '**.html', 
-                dest: 'ng-suggest-templates.js',
+                dest: 'templates.js',
             },
             options: {
                 module: 'ngSuggest',
@@ -95,15 +75,16 @@ module.exports = function(grunt) {
             dist: {
                 src: [
                     'src/*.js','src/**/*.js',
-                    'ng-suggest-templates.js'
+                    'templates.js'
                 ],
                 dest: 'ng-suggest.js',
             },
         },
-        ngmin: {
+        ngAnnotate: {
             angular: {
-                src: ['ng-suggest.js'],
-                dest: 'ng-suggest.js',
+                files: {
+                    'ng-suggest.js': ['ng-suggest.js']
+                }
             }
         },
         uglify : {
@@ -117,28 +98,46 @@ module.exports = function(grunt) {
                 }
             }
         },
+        // update/bump version number in package and source files
+        version: {
+            bump: {
+                src: ['package.json', 'bower.json'],
+            },
+            module: {
+                options: { 
+                    prefix: "\\('ngSuggest.version',\\s*'" 
+                },
+                src: ['src/ng-suggest.js'],
+            },
+        },
+        // release to npmjs and GitHub
+        release: {
+            options: {
+                bump: false,
+                commit: false
+            }
+        },
         shell: {
+            prepare_ngdocs: {
+                command: [
+                    'cp src/index.ngdoc.tpl index.ngdoc',
+                    'cat README.md >> index.ngdoc',
+                    'cp CONTRIBUTING.md contributing.ngdoc'
+                ].join('&&')
+            },
             demo: {
                 command: [
                     "rm -rf docs/demo",
                     "cp -r demo docs",
+                    "find docs/demo -type l -exec rm '{}' ';'",
                     "cp ng-suggest.js docs/grunt-scripts",
-                    "perl -pi -e 's|<script src=\"\\.\\..+|<script src=\"../grunt-scripts/ng-suggest.js\"></script>|' docs/demo/*.html"
+                    "cp -r lib docs/grunt-scripts",
+                    "perl -pi -e 's|<script src=\"\\.\\./src.+|<script src=\"../grunt-scripts/ng-suggest.js\"></script>|' docs/demo/*.html",
                 ].join('&&')
-            },
-            site: {
-                command: "rm -rf site && mkdir site && cp -r docs/* site && find site -type l | xargs rm"
-            },
-            working_copy_must_be_clean: {
-                command: "if git status --porcelain 2>/dev/null | grep -q .; then exit 1; fi",
-                options: { failOnError: true } 
-            },
-            push_site: {
-                command: "git push origin gh-pages",
-                options: { failOnError: true } 
             },
             gh_pages: {
                 command: [
+                    'rm -rf site && mkdir site && cp -r docs/* site',
                     'git checkout gh-pages',
                     'git pull origin gh-pages',
                     'cp -rf site/* .',
@@ -152,16 +151,24 @@ module.exports = function(grunt) {
                     stderr: true,
                     failOnError: true
                 } 
+            },
+            push_gh_pages: {
+                command: "git push origin gh-pages",
+                options: { failOnError: true } 
             }
         }
     });
 
     grunt.registerTask('default',['docs']);
-    grunt.registerTask('ng-suggest',['version','ngtemplates','concat','ngmin','uglify']);
-    grunt.registerTask('docs',['clean','ng-suggest','template','ngdocs','shell:demo']);
-    grunt.registerTask('gh-pages', ['test','shell:working_copy_must_be_clean','site','shell:gh_pages']);
-    grunt.registerTask('push-site', ['gh-pages','shell:push_site']);
-    grunt.registerTask('site', ['docs','shell:site']);
+
+    grunt.registerTask('build',['version','ngtemplates','concat','ngAnnotate','uglify']);
     grunt.registerTask('test',['karma:unit']);
-    grunt.registerTask('watch',['karma:watch']);
+    grunt.registerTask('publish',['build','git-is-clean','test','release','homepage']);
+
+    grunt.registerTask('docs',['clean','build','shell:prepare_ngdocs','ngdocs','shell:demo']);
+
+    grunt.registerTask('gh-pages', ['test','git-is-clean','shell:gh_pages']);
+    grunt.registerTask('homepage', ['gh-pages','git-is-clean','shell:push_gh_pages']);
+
+    grunt.registerTask('site', ['docs','shell:site']);
 };
