@@ -27,4 +27,4 @@
  *   to display link suggestions queried via SeeAlso
  */
 angular.module('ngSuggest',[])
-.value('ngSuggest.version', '0.1.1');
+.value('ngSuggest.version', '0.1.2');
