@@ -15,13 +15,13 @@ the use of [OpenSearch Suggestions](http://www.opensearch.org/Specifications/Ope
 ### npm
 
 ```bash
-npm install ng-suggest --safe
+npm install ng-suggest --save
 ```
 
 ### bower
 
 ```bash
-bower install ng-suggest --safe
+bower install ng-suggest --save
 ```
 
 ## Usage
