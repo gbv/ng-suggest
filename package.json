@@ -22,8 +22,9 @@
   },
   "main": "ng-suggest.min.js",
   "dependencies": {
-    "angular": "~1.2.0",
-    "angular-bootstrap": "^0.12.0"
+    "angular": "1.5.8",
+    "angular-ui-bootstrap": "2.3.0",
+    "bootstrap": "3.3.x"
   },
   "devDependencies": {
     "angular-mocks": "~1.2.0",

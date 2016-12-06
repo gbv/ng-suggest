@@ -1,6 +1,6 @@
-angular.module('myApp', ['ui.bootstrap','ngSuggest']);
-
-function myController($scope, OpenSearchSuggestions) {
+angular.module('myApp', ['ngSuggest'])
+.controller('myController',['$scope','OpenSearchSuggestions',
+        function ($scope, OpenSearchSuggestions) {
 
     $scope.example = [
         {
@@ -66,4 +66,4 @@ function myController($scope, OpenSearchSuggestions) {
             $scope.example[i].item = item;
         }
     }
-}
+}]);

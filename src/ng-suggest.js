@@ -26,5 +26,5 @@
  *   {@link ng-suggest.directive:seealso-api seealso-api}
  *   to display link suggestions queried via SeeAlso
  */
-angular.module('ngSuggest',[])
+angular.module('ngSuggest',['ui.bootstrap'])
 .value('ngSuggest.version', '0.1.2');

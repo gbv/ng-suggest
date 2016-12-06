@@ -45,23 +45,32 @@
  * </example>
  */
 angular.module('ngSuggest').directive('suggestTypeahead',[
-    'OpenSearchSuggestions','$injector',
-    function(OpenSearchSuggestions,$injector) {
+    'OpenSearchSuggestions', function(OpenSearchSuggestions) {
     return {
         restrict: 'A',
+        replace: true,
         scope: {
             api: '=suggestTypeahead',
             jsonp: '@jsonp',
         },
+        template: function(elem, attrs) {
+            // use default template unless explicitly given
+            if (!elem.attr('typeaheadTemplateUrl')) {
+                elem.attr('typeaheadTemplateUrl','template/suggest-typeahead.html');
+            }
 
-        // based on http://stackoverflow.com/questions/15279244 and more hours of work
+            elem.attr('uib-typeahead','item.label for item in suggest($viewValue)');
+            elem.removeAttr('suggest-typeahead'); // avoid infinite recursion
+            return "<div>"+elem[0].outerHTML+"</div>";
+        },
         require: 'ngModel',
-        compile: function(element, attrs) {
+        compile: function(elem, attrs) {
+            
+            // clear the wrapping <div>
+            while(elem[0].attributes.length > 0)
+               elem[0].removeAttribute(elem[0].attributes[0].name);
 
-            var suggestFunction = "suggest_" + Math.random().toString(36).slice(2);
-       
-            // defines scope.service and scope.suggest
-            function suggestLink(scope,element,attrs) {
+            return function(scope, elem, attrs, controller) {
 
                 // create an OpenSearchSuggestions service instance
                 scope.$watch('api',function(service) {
@@ -76,41 +85,14 @@ angular.module('ngSuggest').directive('suggestTypeahead',[
                 });
 
                 // create suggest function that queries the service
-                scope.$parent[suggestFunction] = function(value) {
+                scope.suggest = function(value) {
+                    console.log("suggest("+value+")");
                     var s = scope.service.suggest(value);
                     return s.then(function(suggestions){ 
                         return suggestions.values; 
                     })
                 };
-                
             }
-            
-            // use default template unless explicitly given
-            if (!attrs.typeaheadTemplateUrl) {
-                attrs.$set('typeaheadTemplateUrl','template/suggest-typeahead.html');
-            }
-
-            // insert typeahead directive unless explicitly given
-            var typeaheadLink = function() { };
-            if (!attrs.typeahead) {
-                if ( !$injector.has("typeaheadDirective") ) {
-                    throw new Error("ui.bootstrap.typehead directive required!");
-                }
-
-                var expr = "item.label for item in "+suggestFunction+"($viewValue) | filter:$viewValue";
-                attrs.$set('typeahead',expr);
-                
-                var directive = $injector.get("typeaheadDirective")[0];
-                typeaheadLink = directive.compile(element, attrs);
-            }
-
-            // call both link functions
-            return function(scope, element, attrs, modelCtrl) {
-                suggestLink(scope, element, attrs);
-                // typeahead directive expects the original scope, that's
-                // why the suggest function needs to be defined at parent scope
-                typeaheadLink(scope.$parent, element, attrs, modelCtrl);
-            };
         },
     };
 }]);
